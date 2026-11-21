@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6F0FF">
+<title>🌊 보리하리</title>
+<style>
+:root{
+--lilac:#B9A6F0;
+--lilac-2:#8E74DE;
+--lilac-3:#6C51C0;
+--lilac-soft:#F1EBFF;
+--cream:#FFFBF2;
+--peach:#FFD9C4;
+--mint:#CDEFE1;
+--butter:#FFEDBE;
+--ink:#3B3355;
+--ink-2:#6F6790;
+--ink-3:#9A93B0;
+--line:#EDE6FA;
+--white:#fff;
+--shadow:0 10px 26px rgba(111,83,196,.12);
+--r:24px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{
+\font-family:"Apple SD Gothic Neo","Pretendard","Noto Sans KR",system-ui,-apple-system,"Malgun Gothic",sans-serif;
+\color:var(--ink);
+\background:
+\radial-gradient(1100px 560px at 8% -8%, #F2EBFF 0%, rgba(242,235,255,0) 62%),
+\radial-gradient(900px 480px at 102% -2%, #FFF2DA 0%, rgba(255,242,218,0) 58%),
+\linear-gradient(180deg,#FFFDF8 0%,#FBF6FF 100%);
+\background-attachment:fixed;
+\min-height:100vh;
+\padding-bottom:calc(28px + env(safe-area-inset-bottom));
+-webkit-font-smoothing:antialiased;
+\line-height:1.45;
+}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;-webkit-user-select:none;user-select:none}
+input,select{font-family:inherit;color:var(--ink)}
+b{font-weight:800}
+
+/* ---------- top bar ---------- */
+.topbar{
+\max-width:1080px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 18px 6px;
+\display:flex;align-items:center;gap:12px;
+}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.logo{font-size:30px;line-height:1;filter:drop-shadow(0 4px 8px rgba(142,116,222,.3))}
+.brand h1{font-size:19px;margin:0;letter-spacing:-.02em}
+.brand p{margin:1px 0 0;font-size:12.5px;color:var(--ink-3);font-weight:600}
+.icon-btn{
+\width:44px;height:44px;border-radius:16px;background:#fff;border:2px solid var(--line);
+\display:grid;place-items:center;font-size:19px;box-shadow:0 4px 12px rgba(111,83,196,.08);
+\transition:transform .15s ease;
+}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn.off{opacity:.55}
+
+/* ---------- kid tabs ---------- */
+.tabs{
+\position:sticky;top:0;z-index:20;
+\max-width:1080px;margin:0 auto;padding:8px 18px 10px;
+\display:flex;gap:10px;
+\background:linear-gradient(180deg,rgba(255,253,248,.97) 0%,rgba(255,253,248,.9) 72%,rgba(255,253,248,0) 100%);
+\backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.tab{
+\flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
+\padding:12px 8px;border-radius:18px;border:2px solid var(--line);background:#fff;
+\font-size:16px;font-weight:800;color:var(--ink-2);
+\transition:transform .16s ease,box-shadow .16s ease;
+\min-height:52px;
+}
+.tab:active{transform:scale(.97)}
+.tab .tab-emoji{font-size:20px;line-height:1}
+.tab .tab-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:400px){
+.tab{font-size:15px;padding:12px 6px;gap:6px}
+}
+.tab.active{
+\background:linear-gradient(135deg,var(--lilac) 0%,var(--lilac-2) 100%);
+\border-color:transparent;color:#fff;
+\box-shadow:0 10px 22px rgba(142,116,222,.34);
+}
+.tab .mini{font-size:11.5px;font-weight:800;padding:2px 6px;border-radius:999px;background:var(--lilac-soft);color:var(--lilac-3)}
+.tab.active .mini{background:rgba(255,255,255,.24);color:#fff}
+
+/* ---------- layout ---------- /
+.layout{max-width:1080px;margin:0 auto;padding:0 18px;display:grid;gap:16px;grid-template-columns:1fr;align-items:start}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.col:empty{display:none}
+@media (min-width:820px){
+.layout{grid-template-columns:1fr 1fr;align-items:stretch}
+/ 좌우 두 열을 같은 높이로 늘리고, 각 열의 마지막 카드가 남는 여백을 흡수해
+\두 열의 맨 아래 라인이 정확히 나란히 서게 합니다. /
+.col>.card:last-child{flex:1 0 auto}
+/ 남는 높이는 마지막 카드가 흡수하고, 미션 카드는 안쪽 판(mission-box)이 그 높이를 채워
+\내용이 위에 몰리거나 빈 공간이 붙지 않게 합니다. /
+.col>.card:last-child#missionCard{display:flex;flex-direction:column}
+.col>.card:last-child#missionCard>.mission-box{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
+/ 카드 높이를 잴 때는 늘어나기 전의 자연 높이를 씁니다 */
+\html.measuring-cards #layout>.col>.card:last-child{flex-grow:0;display:block}
+\html.measuring-cards #layout>.col>.card:last-child>.mission-box{flex-grow:0;display:block}
+}
+.card{
+\background:#fff;border-radius:var(--r);padding:18px;
+\border:2px solid #F2ECFF;box-shadow:var(--shadow);
+}
+.card-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.card-head h2{font-size:16.5px;margin:0;letter-spacing:-.02em;flex:1}
+.card-head .badge{
+\font-size:12px;font-weight:800;color:var(--lilac-3);background:var(--lilac-soft);
+\padding:4px 9px;border-radius:999px;
+}
+.muted{color:var(--ink-3);font-size:13px;font-weight:600}
+
+/* ---------- streak ---------- */
+.streak-hero{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.flame{
+\width:62px;height:62px;flex:0 0 62px;border-radius:22px;
+\display:grid;place-items:center;font-size:32px;
+\background:linear-gradient(140deg,#FFF0D8,#FFE0C7);
+\box-shadow:inset 0 0 0 2px rgba(255,255,255,.7),0 8px 18px rgba(255,166,110,.28);
+\animation:breathe 3.2s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.04)}}
+.streak-num{font-size:14px;font-weight:700;color:var(--ink-2)}
+.streak-num b{font-size:30px;color:var(--ink);line-height:1;margin-right:3px;letter-spacing:-.03em}
+.streak-sub{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-top:3px}
+
+.stamps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:4px 0 12px}
+.stamp-cell{
+\aspect-ratio:1/1;border-radius:14px;border:2px dashed #E4DAF9;background:#FCFAFF;
+\display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+\font-size:11px;font-weight:800;color:#C6BEDC;position:relative;
+}
+.stamp-cell.milestone{border-style:solid;border-color:#EADFF8;background:#FFFDF6}
+.stamp-cell.milestone .m-emoji{font-size:15px;filter:grayscale(1);opacity:.42}
+.stamp-cell.filled{
+\border:2px solid transparent;
+\background:linear-gradient(140deg,#CBB8F8,#9C82E6);
+\color:#fff;box-shadow:0 6px 14px rgba(142,116,222,.3);
+\transform:rotate(-2deg);
+}
+.stamp-cell.filled .m-emoji{filter:none;opacity:1}
+.stamp-cell.filled::after{content:"✔";position:absolute;font-size:12px;bottom:2px;right:4px;opacity:.85}
+
+.gauge{height:12px;border-radius:999px;background:#F3EEFF;overflow:hidden;margin-bottom:10px}
+.gauge i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#C7B5F7,#8E74DE);transition:width .5s cubic-bezier(.2,.8,.3,1)}
+.next-hint{
+\display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink-2);
+\background:#FBF8FF;border:2px solid #F1EBFF;border-radius:16px;padding:10px 12px;
+}
+.next-hint .gift{font-size:18px}
+.next-hint b{color:var(--lilac-3)}
+
+/* ---------- tasks ---------- */
+.task-list{display:flex;flex-direction:column;gap:9px}
+.task{
+\position:relative;display:flex;align-items:center;gap:11px;
+\padding:9px 10px 9px 9px;border-radius:18px;background:#FCFAFF;border:2px solid #F2ECFF;
+\transition:background .18s ease,border-color .18s ease,transform .1s ease;
+}
+.task:active{transform:scale(.99)}
+.task .t-emoji{
+\width:40px;height:40px;flex:0 0 40px;border-radius:14px;background:#fff;
+\display:grid;place-items:center;font-size:20px;
+\box-shadow:0 3px 9px rgba(111,83,196,.10);
+}
+.task .t-label{flex:1;font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+.task.done{background:#F4EEFF;border-color:#DFD3FF}
+.task.done .t-label{color:#8B80A6;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:#C8BAEB}
+.check{
+\width:46px;height:46px;flex:0 0 46px;border-radius:50%;
+\border:3px solid #DED2FF;background:#fff;color:transparent;
+\display:grid;place-items:center;font-size:20px;font-weight:900;
+\transition:transform .12s ease,background .18s ease;
+}
+.check:active{transform:scale(.9)}
+.task.done .check{background:linear-gradient(135deg,var(--lilac),var(--lilac-2));border-color:transparent;color:#fff}
+.stamp{
+\position:absolute;right:64px;top:50%;transform:translateY(-50%) rotate(-9deg);
+\font-size:13px;font-weight:900;color:#E4708A;border:3px solid #E4708A;border-radius:11px;
+\padding:1px 8px;background:rgba(255,255,255,.75);pointer-events:none;
+\letter-spacing:.02em;
+}
+.stamp.soft{animation:stampSoft .3s ease-out both}
+@keyframes stampSoft{
+\0%{transform:translateY(-50%) rotate(-9deg) scale(.96);opacity:0}
+\100%{transform:translateY(-50%) rotate(-9deg) scale(1);opacity:1}
+}
+.task-foot{margin-top:11px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink-3)}
+.task-foot .dots{display:flex;gap:4px}
+.task-foot .dot{width:9px;height:9px;border-radius:99px;background:#E7DEFA}
+.task-foot .dot.on{background:linear-gradient(135deg,#B9A6F0,#8E74DE)}
+
+/* ---------- 기록 입력: 시간(분) · 권수(권) ---------- */
+.io-list{display:flex;flex-direction:column;gap:11px}
+.io-item{
+\border-radius:20px;padding:12px 12px 11px;
+\background:linear-gradient(140deg,#FCFAFF,#F7F2FF);
+\border:2px solid #F0E9FC;
+}
+.io-top{display:flex;align-items:center;gap:9px}
+.io-emoji{
+\width:34px;height:34px;flex:0 0 34px;border-radius:12px;background:#fff;
+\display:grid;place-items:center;font-size:17px;
+\box-shadow:0 3px 9px rgba(111,83,196,.10);
+}
+.io-name{flex:1;min-width:0;font-size:14.5px;font-weight:800;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.io-today{display:flex;align-items:baseline;gap:2px;font-size:11.5px;font-weight:800;color:var(--ink-3);flex:0 0 auto}
+.io-today b{
+\font-size:22px;line-height:1;color:var(--lilac-3);font-variant-numeric:tabular-nums;
+\letter-spacing:-.03em;display:inline-block;
+}
+.io-today.bump b{animation:ioBump .36s ease-out both}
+@keyframes ioBump{0%{transform:scale(1)}42%{transform:scale(1.16)}100%{transform:scale(1)}}
+.io-sub{margin:5px 0 8px 43px;font-size:11.5px;font-weight:700;color:var(--ink-3);line-height:1.5}
+.io-sub b{color:var(--ink-2);font-weight:800}
+.io-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.io-quick.three{grid-template-columns:repeat(3,1fr)}
+.io-q{
+\min-height:44px;padding:8px 2px;border-radius:13px;font-size:13px;font-weight:800;
+\background:#fff;border:2px solid #EDE5FB;color:var(--lilac-3);
+\box-shadow:0 3px 8px rgba(111,83,196,.07);transition:transform .12s ease;
+}
+.io-q:active{transform:scale(.95)}
+.io-q.plus{
+\background:linear-gradient(135deg,var(--lilac),var(--lilac-2));color:#fff;border-color:transparent;
+\box-shadow:0 5px 13px rgba(142,116,222,.26);
+}
+.io-q.minus{color:#A79FBC;background:#FBF9FF}
+.io-set{display:flex;align-items:center;gap:6px;margin-top:8px}
+.io-set input{
+\flex:1 1 auto;min-width:0;padding:8px 10px;border-radius:12px;border:2px solid var(--line);
+\background:#fff;font-size:14px;font-weight:800;text-align:center;outline:none;
+-moz-appearance:textfield;
+}
+.io-set input::-webkit-outer-spin-button,.io-set input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.io-set input:focus{border-color:var(--lilac)}
+.io-set .u{font-size:12px;font-weight:800;color:var(--ink-3);flex:0 0 auto}
+.io-set .btn{flex:0 0 58px;min-height:38px;padding:8px 6px;font-size:12.5px}
+.io-del{flex:0 0 auto;font-size:11px;font-weight:800;color:#B3ABC6;text-decoration:underline;padding:4px 2px}
+.io-hist{margin-top:12px;border-top:2px solid #F4EEFF;padding-top:10px}
+.io-hist-head{font-size:11.5px;font-weight:800;color:var(--ink-3);margin:0 0 6px;display:flex;align-items:center;gap:5px}
+.io-hist-head span{margin-left:auto;font-weight:700;color:#BDB6CE}
+.io-table{width:100%;border-collapse:collapse;font-size:11.5px;font-variant-numeric:tabular-nums}
+.io-table th{font-weight:800;color:var(--ink-3);padding:3px 1px 4px;text-align:center;white-space:nowrap;font-size:11px}
+.io-table th:first-child{text-align:left;padding-left:2px}
+.io-table td{
+\padding:5px 1px;text-align:center;font-weight:700;color:var(--ink-2);
+\border-top:1.5px solid #F6F2FF;white-space:nowrap;
+}
+.io-table td:first-child{text-align:left;color:var(--ink-3);font-weight:800;padding-left:2px}
+.io-table tr.is-today td{color:var(--lilac-3);font-weight:900}
+.io-table td.total{color:var(--ink);font-weight:900}
+.io-table .zero{color:#D8D2E7;font-weight:700}
+.io-foot{margin:9px 0 0;font-size:11.5px;font-weight:600;color:var(--ink-3);line-height:1.6;word-break:keep-all}
+
+/* ---------- coupons ---------- */
+.coupon-list{display:flex;flex-direction:column;gap:11px}
+.coupon{
+\position:relative;display:flex;align-items:center;gap:12px;
+\padding:13px 13px;border-radius:18px;
+\background:linear-gradient(135deg,#FFFDFB 0%,#F8F2FF 100%);
+\border:2px dashed rgba(142,116,222,.45);
+}
+.coupon.free{background:linear-gradient(135deg,#FFFDF7,#FFF0DC);border-color:rgba(240,175,90,.5)}
+.coupon.store{background:linear-gradient(135deg,#FBFEFF,#E8F7F1);border-color:rgba(90,190,160,.45)}
+.coupon.artbox{background:linear-gradient(135deg,#FFFCFF,#FFEAF4);border-color:rgba(230,120,170,.45)}
+.coupon.used{background:linear-gradient(135deg,#FBF8F3,#F4F0EA);border-color:#E2DBD1;opacity:.92;padding-bottom:24px}
+.c-emoji{
+\width:46px;height:46px;flex:0 0 46px;border-radius:16px;background:#fff;
+\display:grid;place-items:center;font-size:23px;
+\box-shadow:0 4px 11px rgba(111,83,196,.12);
+}
+.c-body{flex:1;min-width:0}
+.c-title{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.coupon.used .c-title{text-decoration:line-through;color:#A69EB4}
+.c-meta{font-size:11.5px;color:var(--ink-3);font-weight:600;margin-top:2px}
+.use-btn{
+\flex:0 0 auto;padding:10px 14px;border-radius:14px;font-size:13.5px;font-weight:800;
+\background:linear-gradient(135deg,var(--lilac),var(--lilac-2));color:#fff;
+\box-shadow:0 6px 14px rgba(142,116,222,.3);min-height:42px;
+}
+.use-btn:active{transform:scale(.95)}
+.use-btn.ghost{background:#fff;color:var(--ink-2);border:2px solid var(--line);box-shadow:none}
+.used-stamp{
+\position:absolute;right:12px;top:6px;transform:rotate(-12deg);
+\border:2px solid #E27C7C;color:#E27C7C;border-radius:8px;padding:1px 7px;
+\font-size:11px;font-weight:900;letter-spacing:.08em;background:rgba(255,255,255,.6);
+}
+.undo{
+\position:absolute;right:11px;bottom:4px;font-size:11px;font-weight:800;color:var(--ink-3);
+\text-decoration:underline;padding:2px 4px;
+}
+.pop > *:not(.confetti){position:relative;z-index:2}
+.empty{
+\text-align:center;padding:20px 10px;border-radius:18px;border:2px dashed #EFE8FB;background:#FDFBFF;
+\color:var(--ink-3);font-size:13.5px;font-weight:700;line-height:1.6;
+}
+.empty .big{font-size:26px;display:block;margin-bottom:6px;opacity:.75}
+
+/* ---------- mission ---------- */
+.mission-box{
+\border-radius:20px;padding:18px 16px;text-align:center;
+\background:linear-gradient(140deg,#FFF7E6 0%,#FBEFFF 55%,#EFF7FF 100%);
+\border:2px solid #F6EBFF;
+}
+.mission-text{font-size:16px;font-weight:800;line-height:1.5;letter-spacing:-.01em;min-height:26px}
+.mission-text.done{color:#8B80A6}
+.mission-actions{display:flex;gap:9px;margin-top:13px;justify-content:center;flex-wrap:wrap}
+.btn{
+\padding:12px 18px;border-radius:16px;font-size:14.5px;font-weight:800;min-height:46px;
+\background:#fff;border:2px solid var(--line);color:var(--ink-2);
+\box-shadow:0 4px 12px rgba(111,83,196,.08);transition:transform .12s ease;
+}
+.btn:active{transform:scale(.96)}
+.btn.primary{background:linear-gradient(135deg,var(--lilac),var(--lilac-2));color:#fff;border-color:transparent;box-shadow:0 8px 18px rgba(142,116,222,.32)}
+.btn.warm{background:linear-gradient(135deg,#FFC98B,#FF9E7A);color:#fff;border-color:transparent;box-shadow:0 8px 18px rgba(255,150,110,.32)}
+.btn.tiny{padding:8px 12px;font-size:12.5px;min-height:38px;border-radius:12px}
+.add-row{display:flex;gap:8px;margin-top:11px}
+.add-row input{
+\flex:1;min-width:0;padding:11px 13px;border-radius:14px;border:2px solid var(--line);
+\background:#FCFAFF;font-size:14px;font-weight:600;outline:none;
+}
+.add-row input:focus{border-color:var(--lilac);background:#fff}
+
+/* ---------- 새해 디데이 배너 ---------- */
+.newyear{max-width:1080px;margin:0 auto 16px;padding:0 18px}
+.ny-inner{
+\position:relative;overflow:hidden;display:flex;align-items:center;gap:13px;
+\padding:15px 17px;border-radius:24px;
+\background:
+\radial-gradient(120% 150% at 102% -10%, #EDE2FF 0%, rgba(237,226,255,0) 58%),
+\radial-gradient(120% 150% at -5% 110%, #DCEFFF 0%, rgba(220,239,255,0) 60%),
+\linear-gradient(135deg,#FFFAF0 0%,#F7F1FF 55%,#EEF7FF 100%);
+\border:2px solid #EFE7FF;box-shadow:var(--shadow);
+}
+.ny-main{flex:1;min-width:0}
+.ny-kicker{font-size:12.5px;font-weight:900;letter-spacing:.02em;color:var(--lilac-3)}
+.ny-row{display:flex;align-items:center;gap:11px;margin-top:3px;flex-wrap:wrap}
+.ny-dday{
+\font-size:33px;font-weight:900;letter-spacing:-.04em;line-height:1;
+\color:var(--lilac-3);font-variant-numeric:tabular-nums;
+\text-shadow:0 3px 10px rgba(142,116,222,.18);
+}
+.ny-dday.gold{color:#C08A22;text-shadow:0 3px 10px rgba(226,170,60,.28)}
+.ny-text{min-width:0}
+.ny-title{font-size:14.5px;font-weight:800;letter-spacing:-.01em}
+.ny-sub{font-size:12px;font-weight:700;color:var(--ink-3);margin-top:2px;line-height:1.45}
+.ny-art{
+\position:relative;flex:0 0 auto;width:56px;height:56px;border-radius:20px;
+\display:grid;place-items:center;font-size:26px;
+\background:linear-gradient(140deg,#FFFFFF,#F0E8FF);
+\box-shadow:inset 0 0 0 2px rgba(255,255,255,.85),0 8px 18px rgba(142,116,222,.18);
+\animation:breathe 4.2s ease-in-out infinite;
+}
+.ny-flakes{position:absolute;inset:0;pointer-events:none;font-size:10px;color:#A9BCF0;opacity:.8}
+.ny-flakes span{position:absolute;animation:snowFloat 5.6s ease-in-out infinite}
+@keyframes snowFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(4px) rotate(10deg)}}
+@media (max-width:400px){ .ny-dday{font-size:28px} .ny-art{width:48px;height:48px;font-size:22px} .ny-title{font-size:13.5px} }
+
+/* ---------- settings ---------- */
+.settings{max-width:1080px;margin:16px auto 0}
+.settings details{
+\background:#fff;border-radius:var(--r);border:2px solid #F2ECFF;box-shadow:var(--shadow);
+\padding:0 18px;overflow:hidden;
+}
+.settings summary{
+\list-style:none;cursor:pointer;padding:17px 0;font-size:15px;font-weight:800;
+\display:flex;align-items:center;gap:8px;
+}
+.settings summary::-webkit-details-marker{display:none}
+.settings summary .arrow{margin-left:auto;font-size:12px;color:var(--ink-3);transition:transform .2s ease}
+.settings details[open] summary .arrow{transform:rotate(180deg)}
+.set-group{border-top:2px solid #F6F1FF;padding:14px 0}
+.set-group h3{font-size:13.5px;margin:0 0 10px;color:var(--lilac-3);letter-spacing:-.01em}
+.set-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.set-line .lab{font-size:13px;font-weight:700;color:var(--ink-2);min-width:74px}
+.set-line input[type=number]{
+\width:70px;padding:8px 9px;border-radius:11px;border:2px solid var(--line);
+\background:#FCFAFF;font-size:14px;font-weight:800;text-align:center;outline:none;
+}
+.set-line select{
+\padding:9px 10px;border-radius:11px;border:2px solid var(--line);background:#FCFAFF;
+\font-size:13px;font-weight:700;outline:none;
+}
+.set-help{font-size:11.5px;color:var(--ink-3);font-weight:600;line-height:1.6;margin:2px 0 0}
+
+/* ---------- 구글 시트 연결 ---------- */
+.sheet-url{
+\flex:1;min-width:0;width:100%;padding:10px 11px;border-radius:12px;border:2px solid var(--line);
+\background:#FCFAFF;font-size:12px;font-weight:700;outline:none;letter-spacing:-.01em;
+}
+.sheet-url:focus{border-color:var(--lilac);background:#fff}
+.sheet-status{font-size:11.5px;font-weight:800;color:var(--ink-3);margin:0 0 2px;line-height:1.55;word-break:break-all}
+.sheet-status.ok{color:#3F8F6B}
+.sheet-status.err{color:#C05B5B}
+.sheet-note{
+\max-width:1080px;margin:0 auto 10px;padding:0 18px;
+\font-size:11.5px;font-weight:800;color:var(--ink-3);
+\display:flex;align-items:center;gap:6px;line-height:1.5;
+}
+.sheet-note[hidden]{display:none}
+.sheet-note .dot{width:7px;height:7px;border-radius:99px;background:#C9C2DC;flex:0 0 7px}
+.sheet-note.ok{color:#3F8F6B}
+.sheet-note.ok .dot{background:#55BE8C}
+.sheet-note.err{color:#C05B5B}
+.sheet-note.err .dot{background:#E58585}
+.sheet-note.busy .dot{background:var(--lilac)}
+.custom-mission-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.chip{
+\display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+\background:#FBF8FF;border:2px solid #F1EBFF;border-radius:999px;padding:6px 10px;color:var(--ink-2);
+}
+.chip button{font-size:13px;color:#D98A8A;font-weight:900;line-height:1}
+.danger{color:#C96A6A;border-color:#FBDCDC;background:#FFF7F7}
+
+/* ---------- overlays ---------- */
+.overlay{
+\position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:22px;
+\background:rgba(52,42,80,.42);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+}
+.overlay[hidden]{display:none}
+.pop{
+\width:100%;max-width:360px;background:#fff;border-radius:30px;padding:26px 22px 22px;
+\text-align:center;box-shadow:0 26px 64px rgba(52,42,80,.32);
+\animation:popIn .42s cubic-bezier(.18,.9,.28,1.4) both;position:relative;overflow:hidden;
+}
+@keyframes popIn{0%{transform:scale(.8) translateY(14px);opacity:0}100%{transform:scale(1) translateY(0);opacity:1}}
+.pop .hero{font-size:64px;line-height:1;display:block;margin-bottom:8px;animation:highfive 1.1s ease-in-out 2}
+@keyframes highfive{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(4deg) translateY(-7px)}}
+.pop h2{font-size:20px;margin:0 0 6px;letter-spacing:-.02em}
+.pop p{margin:0;font-size:14px;font-weight:700;color:var(--ink-2);line-height:1.6}
+.reward{
+\margin:14px 0 4px;padding:12px;border-radius:16px;
+\background:linear-gradient(135deg,#FFF6E5,#F6EEFF);border:2px dashed rgba(142,116,222,.4);
+\font-size:14px;font-weight:800;color:var(--lilac-3);
+}
+.pop .btn{width:100%;margin-top:14px}
+.confetti{position:absolute;top:-16px;font-size:19px;pointer-events:none;animation:fall 1.9s ease-in forwards}
+@keyframes fall{
+\0%{transform:translateY(-10px) rotate(0);opacity:0}
+\15%{opacity:1}
+\100%{transform:translateY(330px) rotate(220deg);opacity:0}
+}
+
+/* ---------- toast ---------- */
+.toast{
+\position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(16px);
+\background:rgba(59,51,85,.94);color:#fff;padding:12px 18px;border-radius:999px;
+\font-size:13.5px;font-weight:800;z-index:80;opacity:0;transition:opacity .22s ease,transform .22s ease;
+\max-width:88vw;text-align:center;box-shadow:0 12px 30px rgba(52,42,80,.3);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+footer{max-width:1080px;margin:22px auto 0;padding:0 20px;text-align:center;color:var(--ink-3);font-size:11.5px;font-weight:600;line-height:1.7}
+@media (prefers-reduced-motion:reduce){
+*{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+<div class="brand">
+<span class="logo">🌊</span>
+<div>
+<h1>보리하리</h1>
+<p id="todayLabel"></p>
+</div>
+</div>
+<button class="icon-btn" id="soundBtn" data-action="sound" aria-label="알림음 켜기/끄기">🔔</button>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="아이 선택"></nav>
+
+<div id="homeView">
+<div class="sheet-note" id="sheetNote" hidden></div>
+<section class="newyear" id="newyearBanner" aria-label="다가오는 새해 디데이"></section>
+<div class="layout" id="layout">
+<div class="col" id="colA">
+<section class="card" id="streakCard" aria-label="연속 성공"></section>
+<section class="card" id="taskCard" aria-label="오늘의 할 일"></section>
+<section class="card" id="timeCard" aria-label="공부 시간 기록"></section>
+</div>
+<div class="col" id="colB">
+<section class="card" id="bookCard" aria-label="읽은 책 권수"></section>
+<section class="card" id="couponCard" aria-label="내 쿠폰함"></section>
+<section class="card" id="missionCard" aria-label="가족 미션"></section>
+</div>
+</div>
+
+<section class="settings" id="settingsWrap" aria-label="부모 설정"></section>
+</div>
+
+<footer>
+<span id="footerNote">외부 연결 없이 이 파일만으로 열려요 · 기록은 이 기기 브라우저에만 저장됩니다 🔒</span><br>
+<span id="storageNote"></span>
+</footer>
+
+<div class="overlay" id="highfiveOverlay" hidden>
+<div class="pop" id="highfiveContent"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<noscript><p style="text-align:center;padding:20px;font-weight:700">자바스크립트를 켜야 대시보드가 움직여요!</p></noscript>
+
+<script>
+(function(){
+"use strict";
+
+/* ===================== 기본 데이터 ===================== */
+const KIDS = [
+{ id:'kid1', name:'첫째', emoji:'🌟' },
+{ id:'kid2', name:'둘째', emoji:'🍀' }
+];
+
+/* 오늘의 할 일 7개 — 7개를 모두 체크하면 하루 성공 */
+const TASKS = [
+{ id:'flow',    emoji:'🌊', label:'흘려듣기' },
+{ id:'focus',   emoji:'🎧', label:'집중듣기' },
+{ id:'engbook', emoji:'📕', label:'영어책' },
+{ id:'kobook',  emoji:'📗', label:'한글책' },
+{ id:'math',    emoji:'➗', label:'수학문제집' },
+{ id:'engwb',   emoji:'✏️', label:'영어문제집' },
+{ id:'ppajak',  emoji:'📝', label:'빠작' }
+];
+
+/* 이전 저장본(v1·v2)의 할 일 id → 새 7개 id */
+const TASK_ALIASES = {
+\flow:    ['flow', 'listen', 'heullyeo'],
+\focus:   ['focus', 'jipjung'],
+\engbook: ['engbook', 'englishbook', 'eng'],
+\kobook:  ['kobook', 'koreanbook', 'kor'],
+\math:    ['math', 'mathbook'],
+\engwb:   ['engwb', 'engwork', 'engworkbook', 'englishworkbook'],
+\ppajak:  ['ppajak', 'bbajak']
+};
+
+/* 시간 기록 4종 (분) */
+const TIME_ITEMS = [
+{ id:'flow',    emoji:'🌊', label:'흘려듣기',   short:'흘림' },
+{ id:'focus',   emoji:'🎧', label:'집중듣기',   short:'집중' },
+{ id:'engRead', emoji:'📕', label:'영어책읽기', short:'영책' },
+{ id:'korRead', emoji:'📗', label:'한글책읽기', short:'한책' }
+];
+const TIME_QUICK = [10, 20, 30];
+const TIME_STEP  = 10;
+const TIME_MAX   = 600;
+
+/* 권수 기록 2종 (권) */
+const BOOK_ITEMS = [
+{ id:'eng', emoji:'📕', label:'영어책', short:'영어' },
+{ id:'kor', emoji:'📗', label:'한글책', short:'한글' }
+];
+const BOOK_QUICK = [1, 2];
+const BOOK_MAX   = 50;
+
+const MILESTONES = [
+{ day:7,  type:'free',   emoji:'⏱️', title:'30분 자유시간',   desc:'좋아하는 걸로 30분!' },
+{ day:10, type:'store',  emoji:'🏪', title:'편의점 이용권',    desc:'편의점에서 한 가지!' },
+{ day:15, type:'artbox', emoji:'🎀', title:'아트박스 이용권',  desc:'아트박스에서 한 가지!' }
+];
+
+const BASE_MISSIONS = [
+'가족에게 안아 주기 3번 🤗',
+'오늘 고마웠던 일 한 가지 말하기 💬',
+'가족에게 칭찬 한마디 🌟',
+'물 한 잔 떠다 드리기 💧',
+'가족이랑 사진 한 장 같이 찍기 📸',
+'10분 동안 같이 책 읽기 📚',
+'오늘 제일 웃겼던 일 이야기하기 😂',
+'엄마·아빠 어깨 30초 안마 💆',
+'식탁 정리 도와주기 🍽️',
+'좋아하는 노래 같이 부르기 🎵',
+'가족에게 손편지 한 줄 쓰기 ✉️',
+'산책하면서 하늘 사진 찍기 🌤️'
+];
+
+const STORE_KEY  = 'borihari-dashboard.v1';
+const DAY_MS = 86400000;
+
+/* ---------- 시즌: 2027 새해 디데이 ---------- */
+const NY_DAY = '2027-01-01';
+
+/* ===================== 도우미 ===================== */
+const $ = (sel, root) => (root || document).querySelector(sel);
+const el = {
+\tabs: $('#tabs'), todayLabel: $('#todayLabel'), soundBtn: $('#soundBtn'),
+\streakCard: $('#streakCard'), taskCard: $('#taskCard'), couponCard: $('#couponCard'),
+\missionCard: $('#missionCard'), settingsWrap: $('#settingsWrap'),
+\timeCard: $('#timeCard'), bookCard: $('#bookCard'),
+\colA: $('#colA'), colB: $('#colB'),
+\highfive: $('#highfiveOverlay'), highfiveContent: $('#highfiveContent'),
+\toast: $('#toast'), storageNote: $('#storageNote'),
+\newyear: $('#newyearBanner'), sheetNote: $('#sheetNote'), footerNote: $('#footerNote')
+};
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function pad2(n){ return (n < 10 ? '0' : '') + n; }
+function dateStr(d){ return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate()); }
+function todayStr(){ return dateStr(new Date()); }
+function yesterdayStr(){ return dateStr(new Date(Date.now() - DAY_MS)); }
+
+/* 두 날짜(YYYY-MM-DD) 사이의 일수 — 오늘 기준 남은 날 */
+function daysUntil(iso){
+\const now = new Date();
+\const parts = String(iso).split('-').map(Number);
+\if (parts.length !== 3 || parts.some(function(n){ return !isFinite(n); })) return 0;
+\const from = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+\const to = Date.UTC(parts[0], parts[1] - 1, parts[2]);
+\return Math.round((to - from) / DAY_MS);
+}
+
+function koreanDate(d){
+\const days = ['일','월','화','수','목','금','토'];
+\return d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 ' + days[d.getDay()] + '요일';
+}
+
+function esc(s){
+\return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+\return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+});
+}
+
+function shortDate(iso){
+\if (!iso) return '';
+\const d = new Date(iso);
+\if (isNaN(d.getTime())) return '';
+\return (d.getMonth()+1) + '/' + d.getDate();
+}
+
+let toastTimer = null;
+function toast(msg){
+\el.toast.textContent = msg;
+\el.toast.classList.add('show');
+\clearTimeout(toastTimer);
+\toastTimer = setTimeout(function(){ el.toast.classList.remove('show'); }, 2200);
+}
+
+/* ===================== 저장 ===================== */
+let storageOK = true;
+
+function defaultKid(day){
+\return { streak:0, best:0, totalDone:0, lastDone:null, date:day, tasks:{}, coupons:[], time:{}, books:{} };
+}
+
+function defaultState(){
+\const t = todayStr();
+\const kids = {};
+\KIDS.forEach(function(k){ kids[k.id] = defaultKid(t); });
+\return {
+\v: 3,
+\active: 'kid1',
+\kids: kids,
+\missions: BASE_MISSIONS.map(function(text, i){ return { id:'base' + i, text:text, custom:false }; }),
+\mission: { date:null, text:'', done:false },
+\settings: { sound:true }
+};
+}
+
+let needsMigrateSave = false;
+
+function loadState(){
+\const base = defaultState();
+\let saved = null;
+\try {
+\const raw = localStorage.getItem(STORE_KEY);
+\if (raw) saved = JSON.parse(raw);
+} catch (e) { storageOK = false; }
+
+\if (!saved || typeof saved !== 'object') return base;
+
+\const s = Object.assign(base, saved);
+\delete s.preset;   /* 예전 판에서 저장된, 이제 쓰지 않는 값 정리 */
+\s.settings = Object.assign({ sound:true }, saved.settings || {});
+\s.mission  = Object.assign({ date:null, text:'', done:false }, saved.mission || {});
+\s.kids     = s.kids && typeof s.kids === 'object' ? s.kids : {};
+\s.missions = Array.isArray(saved.missions) && saved.missions.length ? saved.missions : base.missions;
+
+\KIDS.forEach(function(k){
+\const from = s.kids[k.id] || {};
+\const kid = Object.assign(defaultKid(base.kids[k.id].date), from);
+\kid.tasks   = (from.tasks && typeof from.tasks === 'object') ? from.tasks : {};
+\kid.coupons = Array.isArray(from.coupons) ? from.coupons : [];
+\kid.streak  = Number(kid.streak) || 0;
+\kid.best    = Number(kid.best) || 0;
+\kid.totalDone = Number(kid.totalDone) || 0;
+\s.kids[k.id] = kid;
+});
+
+/* --- 마이그레이션(이전 저장본 → v3) ---
+\· 할 일은 v1의 7개(focus/listen/engbook/kobook/math/engwb/ppajak)와
+\v2의 2개(engbook/kobook) 이름을 모두 새 7개 id로 옮겨 받습니다.
+\· v2까지 쓰던 흘려듣기 분(kid.listen)은 날짜별 시간 기록의 '흘려듣기'로 옮깁니다.
+\· 시간 기록은 kid.time, 권수 기록은 kid.books 에 날짜별(YYYY-MM-DD)로 쌓입니다. */
+\KIDS.forEach(function(k){
+\const kid = s.kids[k.id];
+
+\const rawTasks = (kid.tasks && typeof kid.tasks === 'object') ? kid.tasks : {};
+\const nextTasks = {};
+\Object.keys(TASK_ALIASES).forEach(function(newId){
+(TASK_ALIASES[newId] || []).forEach(function(oldId){
+\if (rawTasks[oldId] === true || rawTasks[oldId] === 'true') nextTasks[newId] = true;
+});
+});
+\kid.tasks = nextTasks;
+
+\const timeSrc = (kid.time && typeof kid.time === 'object' && !Array.isArray(kid.time)) ? kid.time : {};
+\const cleanTime = {};
+\Object.keys(timeSrc).forEach(function(d){
+\if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+\const one = timeSrc[d];
+\if (!one || typeof one !== 'object' || Array.isArray(one)) return;
+\const rec = {};
+\TIME_ITEMS.forEach(function(it){
+\const v = clampInt(one[it.id], TIME_MAX);
+\if (v > 0) rec[it.id] = v;
+});
+\if (Object.keys(rec).length) cleanTime[d] = rec;
+});
+
+\const listenSrc = (kid.listen && typeof kid.listen === 'object' && !Array.isArray(kid.listen)) ? kid.listen : {};
+\Object.keys(listenSrc).forEach(function(d){
+\if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+\const v = clampInt(listenSrc[d], TIME_MAX);
+\if (v <= 0) return;
+\const rec = Object.assign({}, cleanTime[d] || {});
+\if (!(rec.flow > 0)) rec.flow = v;
+\cleanTime[d] = rec;
+});
+\kid.time = cleanTime;
+\delete kid.listen;
+
+\const bookSrc = (kid.books && typeof kid.books === 'object' && !Array.isArray(kid.books)) ? kid.books : {};
+\const cleanBooks = {};
+\Object.keys(bookSrc).forEach(function(d){
+\if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+\const one = bookSrc[d];
+\if (!one || typeof one !== 'object' || Array.isArray(one)) return;
+\const rec = {};
+\BOOK_ITEMS.forEach(function(it){
+\const v = clampInt(one[it.id], BOOK_MAX);
+\if (v > 0) rec[it.id] = v;
+});
+\if (Object.keys(rec).length) cleanBooks[d] = rec;
+});
+\kid.books = cleanBooks;
+});
+\s.v = 3;
+\if (Number(saved.v) !== 3) needsMigrateSave = true;
+
+\if (!s.kids[s.active]) s.active = 'kid1';
+\return s;
+}
+
+let state = loadState();
+
+/* 예전 저장본(v1: 할 일 7개)을 새 구성으로 바꿨다면 그 모습으로 다시 저장해 둡니다. */
+if (needsMigrateSave) { needsMigrateSave = false; save(); }
+
+function save(){
+\try {
+\localStorage.setItem(STORE_KEY, JSON.stringify(state));
+} catch (e) {
+\if (storageOK) { storageOK = false; toast('이 브라우저에 저장이 안 돼요. 탭을 닫으면 사라져요!'); }
+}
+}
+
+/* ===================== 구글 시트 연결 (선택) =====================
+\부모 설정에서 Apps Script 웹 앱 주소를 넣으면 오늘의 체크·흘려듣기 분을 시트에 쌓고,
+\새로 고칠 때 시트 기록을 다시 불러와 다른 기기와 같은 기록을 볼 수 있어요.
+\주소가 비어 있으면 이 블록은 아무 것도 하지 않고 localStorage만으로 동작합니다. */
+var SHEET_KEY = 'borihari-dashboard.sheet.v1';
+
+var sheetCfg = loadSheetCfg();
+var sheetStatus = { kind:'', text:'' };
+var sheetTotals = {};
+
+function loadSheetCfg(){
+\try {
+\var raw = localStorage.getItem(SHEET_KEY);
+\if (!raw) return { url:'' };
+\var o = JSON.parse(raw);
+\return { url: String((o && o.url) || '').trim() };
+} catch (e) { return { url:'' }; }
+}
+
+function saveSheetCfg(){
+\try { localStorage.setItem(SHEET_KEY, JSON.stringify({ url: sheetCfg.url })); } catch (e) {}
+}
+
+function sheetOn(){ return !!(sheetCfg && /^https?:///.test(String(sheetCfg.url || ''))); }
+
+function timeHHMM(d){ return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); }
+
+function renderSheetNote(){
+\if (!el.sheetNote) return;
+\if (!sheetStatus.text) { el.sheetNote.hidden = true; el.sheetNote.textContent = ''; return; }
+\el.sheetNote.hidden = false;
+\el.sheetNote.className = 'sheet-note' + (sheetStatus.kind ? ' ' + sheetStatus.kind : '');
+\el.sheetNote.innerHTML = '<span class="dot"></span><span>' + esc(sheetStatus.text) + '</span>';
+}
+
+function setSheetStatus(kind, text){
+\sheetStatus = { kind: kind || '', text: text || '' };
+\renderSheetNote();
+\var box = $('#sheetStatus');
+\if (box) {
+\box.className = 'sheet-status' + (sheetStatus.kind ? ' ' + sheetStatus.kind : '');
+\box.textContent = sheetStatus.text || '아직 연결하지 않았어요.';
+}
+}
+
+function kidSheetName(kidId){
+\var k = KIDS.filter(function(x){ return x.id === kidId; })[0];
+\return k ? k.name : kidId;
+}
+
+function kidIdByName(name){
+\var k = KIDS.filter(function(x){ return x.name === name; })[0];
+\return k ? k.id : null;
+}
+
+/* 오늘 하루치 기록 본문 — 할 일 7개 · 시간 4종(분) · 권수 2종(권) */
+function sheetRow(kidId){
+\var kid = state.kids[kidId];
+\var tasks = {}, time = {}, books = {};
+\TASKS.forEach(function(x){ tasks[x.id] = !!kid.tasks[x.id]; });
+\TIME_ITEMS.forEach(function(x){ time[x.id] = timeToday(kid, x.id); });
+\BOOK_ITEMS.forEach(function(x){ books[x.id] = bookToday(kid, x.id); });
+\return {
+\action: 'upsert',
+\date: todayStr(),
+\kid: kidSheetName(kidId),
+\tasks: tasks,
+\time: time,
+\books: books
+};
+}
+
+/* CORS 회피: Content-Type을 text/plain으로 보내야 preflight(OPTIONS)가 생기지 않아요. */
+function sheetPost(body){
+\return fetch(sheetCfg.url, {
+\method: 'POST',
+\headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+\body: JSON.stringify(body),
+\redirect: 'follow'
+}).then(function(res){
+\if (!res.ok) throw new Error('HTTP ' + res.status);
+\return res.text();
+}).then(function(text){
+\var out = null;
+\try { out = JSON.parse(text); } catch (e) {}
+\if (!out || out.ok !== true) throw new Error((out && out.error) || '시트 응답을 읽지 못했어요');
+\return out;
+});
+}
+
+function sheetPush(kidId){
+\if (!sheetOn()) return;
+\var body;
+\try { body = sheetRow(kidId); } catch (e) { return; }
+\var name = kidSheetName(kidId);
+\setSheetStatus('busy', '시트에 저장하는 중…');
+\sheetPost(body).then(function(out){
+\if (out && out.totals) sheetTotals = out.totals;
+\setSheetStatus('ok', name + ' 시트 저장됨 ✓ ' + timeHHMM(new Date()));
+}).catch(function(err){
+\setSheetStatus('err', '시트 저장 실패 · ' + (err && err.message ? err.message : '연결을 확인해 주세요'));
+});
+}
+
+function sheetLoad(silent, prefix){
+\if (!sheetOn()) {
+\if (!silent) toast('부모 설정에서 구글 시트 주소를 먼저 넣어 주세요');
+\return;
+}
+\var url = sheetCfg.url + (sheetCfg.url.indexOf('?') >= 0 ? '&' : '?') + 'action=list&t=' + Date.now();
+\setSheetStatus('busy', '시트에서 불러오는 중…');
+
+\function handleOut(out){
+\if (!out || out.ok !== true) throw new Error((out && out.error) || '시트 응답을 읽지 못했어요');
+\if (out.totals && typeof out.totals === 'object') sheetTotals = out.totals;
+\var n = applySheetRows(Array.isArray(out.rows) ? out.rows : []);
+\setSheetStatus('ok', (prefix ? prefix + ' · ' : '') + '시트에서 ' + n + '건 불러옴 ✓ ' + timeHHMM(new Date()));
+\if (!silent) toast('☁️ 시트에서 ' + n + '건 불러왔어요');
+}
+
+\function failLoad(err){
+\setSheetStatus('err', '시트 불러오기 실패 · ' + (err && err.message ? err.message : '연결을 확인해 주세요'));
+\if (!silent) toast('시트에서 불러오지 못했어요');
+}
+
+\fetch(url, { method:'GET', redirect:'follow' }).then(function(res){
+\if (!res.ok) throw new Error('HTTP ' + res.status);
+\return res.text();
+}).then(function(text){
+\var out = null;
+\try { out = JSON.parse(text); } catch (e) {}
+\handleOut(out);
+}).catch(function(){
+/* GET 응답이 브라우저에서 막히면 POST(text/plain)로 한 번 더 시도합니다. */
+\if (!sheetOn()) return;
+\sheetPost({ action:'list' }).then(handleOut).catch(failLoad);
+});
+}
+
+/* 시트 기록을 이 기기에 합칩니다.
+\· 시간·권수: 시트에 있는 날짜의 값으로 맞춥니다(0이면 지워요).
+\· 오늘 할 일 체크: 시트에서 한 것으로 적힌 항목만 켭니다(이 기기에서 방금 한 체크는 지우지 않아요). */
+function sameDayRec(a, b, ids, max){
+\return ids.every(function(it){
+\return clampInt((a || {})[it.id], max) === clampInt((b || {})[it.id], max);
+});
+}
+
+function applySheetRows(rows){
+\var t = todayStr();
+\var changed = false;
+\var applied = 0;
+
+\rows.forEach(function(r){
+\if (!r || !r.date) return;
+\var raw = String(r.kid || '').trim();
+\var kidId = kidIdByName(raw) || (state.kids[raw] ? raw : null);
+\if (!kidId) return;
+\var kid = state.kids[kidId];
+\var d = String(r.date).slice(0, 10);
+\if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+
+/* 시간 4종 */
+\var timeMap = ensureDayMap(kid, 'time');
+\var timeRec = {};
+\TIME_ITEMS.forEach(function(it){
+\var v = clampInt(r.time && r.time[it.id], TIME_MAX);
+\if (v > 0) timeRec[it.id] = v;
+});
+\if (!sameDayRec(timeMap[d], timeRec, TIME_ITEMS, TIME_MAX)) {
+\if (Object.keys(timeRec).length) timeMap[d] = timeRec;
+\else delete timeMap[d];
+\changed = true;
+}
+
+/* 권수 2종 */
+\var bookMap = ensureDayMap(kid, 'books');
+\var bookRec = {};
+\BOOK_ITEMS.forEach(function(it){
+\var v = clampInt(r.books && r.books[it.id], BOOK_MAX);
+\if (v > 0) bookRec[it.id] = v;
+});
+\if (!sameDayRec(bookMap[d], bookRec, BOOK_ITEMS, BOOK_MAX)) {
+\if (Object.keys(bookRec).length) bookMap[d] = bookRec;
+\else delete bookMap[d];
+\changed = true;
+}
+
+/* 오늘 할 일 체크 (켜기만) */
+\if (d === t && r.tasks && typeof r.tasks === 'object') {
+\TASKS.forEach(function(x){
+\if (r.tasks[x.id] && !kid.tasks[x.id]) { kid.tasks[x.id] = true; changed = true; }
+});
+}
+\applied++;
+});
+
+\if (changed) { save(); renderAll(); }
+\return applied;
+}
+
+function sheetUnlink(){
+\if (!confirm('구글 시트 연결을 끊을까요? 시트에 쌓인 기록은 그대로 남아요.')) return;
+\sheetCfg.url = '';
+\saveSheetCfg();
+\sheetTotals = {};
+\setSheetStatus('', '');
+\renderAll();
+\toast('시트 연결을 끊었어요. 기록은 이 기기에만 저장돼요.');
+}
+
+function sheetSaveAndTest(){
+\var input = $('#sheetUrl');
+\var url = input ? String(input.value || '').trim() : '';
+\if (!url) { toast('Apps Script 웹 앱 주소를 넣어 주세요'); return; }
+\if (!/^https://script.google.com/macros/s/[^/?#]+/(exec|dev)/.test(url)) {
+\setSheetStatus('err', '주소 모양을 확인해 주세요 · https://script.google.com/macros/s/…/exec');
+\toast('웹 앱 주소(…/exec)를 붙여 넣어 주세요');
+\return;
+}
+\sheetCfg.url = url;
+\saveSheetCfg();
+\renderAll();
+\setSheetStatus('busy', '연결 확인 중…');
+\sheetPost({ action:'ping' }).then(function(out){
+\setSheetStatus('ok', '연결됨 ✓ · 시트 “' + (out.sheet || '독서기록') + '” ' + (Number(out.rows) || 0) + '줄');
+\toast('☁️ 구글 시트에 연결했어요');
+\sheetLoad(true, '연결됨 ✓');
+}).catch(function(err){
+\setSheetStatus('err', '연결 실패 · ' + (err && err.message ? err.message : '') + ' · 주소와 “모든 사용자” 공개 설정을 확인해 주세요');
+\toast('시트에 연결하지 못했어요');
+});
+}
+
+/* 기록을 바꾼 뒤: 이 기기에 저장하고, 시트가 연결돼 있으면 바로 올립니다. */
+function saveAndSync(kidId){
+\save();
+\if (sheetOn()) sheetPush(kidId);
+}
+
+/* ===================== 날짜 넘어감 / 스트릭 정리 ===================== */
+function normalizeDay(){
+\const t = todayStr();
+\let changed = false;
+
+\KIDS.forEach(function(k){
+\const kid = state.kids[k.id];
+\if (kid.date !== t) {
+\kid.date = t;
+\kid.tasks = {};
+\changed = true;
+}
+\if (kid.streak > 0 && kid.lastDone && kid.lastDone !== t && kid.lastDone !== yesterdayStr()) {
+\kid.streak = 0;
+\changed = true;
+}
+});
+
+\if (state.mission.date && state.mission.date !== t) {
+\state.mission = { date:null, text:'', done:false };
+\changed = true;
+}
+
+\if (changed) { save(); renderAll(); }
+\return changed;
+}
+
+/* ===================== 계산 ===================== */
+function curKid(){ return KIDS.filter(function(k){ return k.id === state.active; })[0] || KIDS[0]; }
+function kidState(id){ return state.kids[id || state.active]; }
+function doneCount(kid){ return TASKS.filter(function(t){ return !!kid.tasks[t.id]; }).length; }
+function allDone(kid){ return doneCount(kid) === TASKS.length; }
+function cycleDayOf(streak){ return streak > 0 ? ((streak - 1) % 15) + 1 : 0; }
+function cycleOf(streak){ return streak > 0 ? Math.floor((streak - 1) / 15) + 1 : 1; }
+
+function nextMilestone(streak){
+\const day = cycleDayOf(streak);
+\for (let i = 0; i < MILESTONES.length; i++) {
+\if (MILESTONES[i].day > day) return { m: MILESTONES[i], need: MILESTONES[i].day - day };
+}
+\return { m: MILESTONES[0], need: (15 - day) + MILESTONES[0].day };
+}
+
+function awardCoupons(kid, streak){
+\const issued = [];
+\const cycle = Math.floor((streak - 1) / 15);
+\const day = cycleDayOf(streak);
+
+\MILESTONES.forEach(function(m){
+\if (m.day !== day) return;
+\const key = 'c' + cycle + '-d' + m.day;
+\if (kid.coupons.some(function(c){ return c.key === key; })) return;
+\kid.coupons.unshift({
+\id: uid(), key: key, emoji: m.emoji, title: m.title, desc: m.desc, type: m.type,
+\issuedAt: new Date().toISOString(), used: false, usedAt: null, streakAt: streak
+});
+\issued.push(m);
+});
+\return issued;
+}
+
+/* ===================== 소리 ===================== */
+let audioCtx = null;
+
+function ensureAudio(){
+\if (!state.settings.sound) return false;
+\try {
+\const Ctx = window.AudioContext || window.webkitAudioContext;
+\if (!Ctx) return false;
+\if (!audioCtx) audioCtx = new Ctx();
+\if (audioCtx.state === 'suspended' && audioCtx.resume) audioCtx.resume();
+\return true;
+} catch (e) { return false; }
+}
+
+function tone(freq, start, dur, vol){
+\if (!audioCtx) return;
+\const t0 = audioCtx.currentTime + start;
+\const osc = audioCtx.createOscillator();
+\const gain = audioCtx.createGain();
+\osc.type = 'sine';
+\osc.frequency.setValueAtTime(freq, t0);
+\gain.gain.setValueAtTime(0.0001, t0);
+\gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.03);
+\gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+\osc.connect(gain).connect(audioCtx.destination);
+\osc.start(t0);
+\osc.stop(t0 + dur + 0.05);
+}
+
+function playChime(){
+\if (!ensureAudio()) return;
+[523.25, 659.25, 783.99, 1046.5].forEach(function(f, i){ tone(f, i * 0.16, 0.5, 0.16); });
+}
+
+function playTick(){
+\if (!ensureAudio()) return;
+\tone(880, 0, 0.14, 0.07);
+}
+
+function playStamp(){
+\if (!ensureAudio()) return;
+\tone(392, 0, 0.16, 0.13);
+\tone(587.33, 0.06, 0.18, 0.1);
+}
+
+function buzz(pattern){
+\if (!state.settings.sound) return;
+\try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
+}
+
+/* ===================== 렌더: 탭 ===================== */
+function renderTabs(){
+\el.tabs.innerHTML = KIDS.map(function(k){
+\const kid = state.kids[k.id];
+\const active = state.active === k.id;
+\const badges = [];
+\if (kid.streak > 0) badges.push('<span class="mini">🔥' + kid.streak + '</span>');
+\if (allDone(kid)) badges.push('<span class="mini">✅</span>');
+\return '<button class="tab' + (active ? ' active' : '') + '" data-action="tab" data-kid="' + k.id + '" aria-pressed="' + active + '">' +
+'<span class="tab-emoji">' + k.emoji + '</span><span class="tab-name">' + k.name + '</span>' + badges.join('') +
+'</button>';
+}).join('');
+}
+
+/* ===================== 렌더: 스트릭 ===================== */
+function renderStreak(){
+\const k = curKid();
+\const kid = kidState(k.id);
+\const streak = kid.streak;
+\const day = cycleDayOf(streak);
+\const cycle = cycleOf(streak);
+\const nm = nextMilestone(streak);
+
+\let cells = '';
+\for (let d = 1; d <= 15; d++) {
+\const ms = MILESTONES.filter(function(m){ return m.day === d; })[0];
+\const filled = d <= day;
+\const cls = 'stamp-cell' + (filled ? ' filled' : '') + (ms ? ' milestone' : '');
+\const inner = ms
+? '<span class="m-emoji">' + ms.emoji + '</span><span>' + d + '</span>'
+: '<span>' + d + '</span>';
+\cells += '<div class="' + cls + '" title="' + (ms ? ms.title : d + '일째') + '">' + inner + '</div>';
+}
+
+\const pct = Math.round((day / 15) * 100);
+\const streakLine = streak > 0
+? '<div class="streak-num"><b>' + streak + '</b>일 연속 성공</div>'
+: '<div class="streak-num"><b>0</b>일 · 오늘부터 시작!</div>';
+
+\const subLine = (kid.best > 0 || kid.totalDone > 0)
+? '최고 기록 ' + kid.best + '일 · 지금까지 ' + kid.totalDone + '일 성공'
+: '오늘 할 일 ' + TASKS.length + '개를 다 하면 1일째 시작이에요';
+
+\const cycleNote = streak > 15 ? '<span class="badge">' + cycle + '번째 사이클</span>' : '';
+
+\el.streakCard.innerHTML =
+'<div class="card-head"><h2>🔥 연속 성공</h2>' + cycleNote + '<span class="badge">' + k.emoji + ' ' + k.name + '</span></div>' +
+'<div class="streak-hero">' +
+'<div class="flame">' + (streak > 0 ? '🔥' : '🌱') + '</div>' +
+'<div>' + streakLine + '<div class="streak-sub">' + subLine + '</div></div>' +
+'</div>' +
+'<div class="stamps">' + cells + '</div>' +
+'<div class="gauge" aria-hidden="true"><i style="width:' + pct + '%"></i></div>' +
+'<div class="next-hint"><span class="gift">🎁</span><span>다음 쿠폰까지 <b>' + nm.need + '일</b> — ' +
+\nm.m.emoji + ' ' + nm.m.title + '</span></div>';
+}
+
+/* ===================== 렌더: 새해 디데이 ===================== */
+function renderNewYear(){
+\if (!el.newyear) return;
+\const d = daysUntil(NY_DAY);
+\let big, title, sub, gold = false;
+\if (d > 0) {
+\big = 'D-' + d;
+\title = '2027년 1월 1일까지';
+\sub = d + '일 남았어요';
+} else if (d === 0) {
+\big = 'D-DAY';
+\title = '새해가 밝았어요! 🎉';
+\sub = '2027년 1월 1일 · 새해 복 많이 받으세요';
+\gold = true;
+} else {
+\big = 'D+' + (-d);
+\title = '2027년이 시작됐어요';
+\sub = '새해에도 좋은 일만 가득하길!';
+\gold = true;
+}
+
+\el.newyear.innerHTML =
+'<div class="ny-inner">' +
+'<div class="ny-art" aria-hidden="true">' + (d === 0 ? '🎉' : '⛄') + '</div>' +
+'<div class="ny-main">' +
+'<div class="ny-kicker">🎊 2027 새해 D-Day</div>' +
+'<div class="ny-row">' +
+'<div class="ny-dday' + (gold ? ' gold' : '') + '">' + big + '</div>' +
+'<div class="ny-text"><div class="ny-title">' + title + '</div>' +
+'<div class="ny-sub">' + sub + '</div></div>' +
+'</div>' +
+'</div>' +
+'<div class="ny-flakes" aria-hidden="true">' +
+'<span style="left:4%;top:10%;animation-delay:0s">❄</span>' +
+'<span style="right:9%;top:14%;animation-delay:.9s">✦</span>' +
+'<span style="right:26%;bottom:16%;animation-delay:1.7s">❄</span>' +
+'</div>' +
+'</div>';
+}
+
+/* ===================== 렌더: 오늘의 할 일 ===================== */
+let justChecked = null;
+
+function renderTasks(){
+\const k = curKid();
+\const kid = kidState(k.id);
+\const n = doneCount(kid);
+\const complete = n === TASKS.length;
+
+\const rows = TASKS.map(function(t){
+\const on = !!kid.tasks[t.id];
+\const stamp = on ? '<span class="stamp' + (justChecked === t.id ? ' soft' : '') + '">완료</span>' : '';
+\return '<div class="task' + (on ? ' done' : '') + '">' +
+'<div class="t-emoji">' + t.emoji + '</div>' +
+'<div class="t-label">' + t.label + '</div>' + stamp +
+'<button class="check" data-action="toggle-task" data-task="' + t.id + '" ' +
+'aria-label="' + esc(t.label) + (on ? ' 완료 취소' : ' 완료') + '" aria-pressed="' + on + '">✔</button>' +
+'</div>';
+}).join('');
+
+\const dots = TASKS.map(function(t){
+\return '<span class="dot' + (kid.tasks[t.id] ? ' on' : '') + '"></span>';
+}).join('');
+
+\el.taskCard.innerHTML =
+'<div class="card-head"><h2>📋 오늘의 할 일</h2><span class="badge">' + n + ' / ' + TASKS.length + '</span></div>' +
+'<div class="task-list">' + rows + '</div>' +
+'<div class="task-foot"><span class="dots">' + dots + '</span>' +
+'<span>' + (complete ? '오늘 ' + TASKS.length + '개 완료! 정말 대단해요 🎉' : (TASKS.length - n) + '개 남았어요') + '</span></div>';
+}
+
+/* ===================== 렌더: 공부 시간 기록 (분) ===================== /
+let timeBump = '';   / 방금 값을 바꾼 시간 항목 id — 숫자가 톡 튀는 애니메이션용 */
+
+function fmtMin(m){
+\const v = Math.max(0, Math.round(Number(m) || 0));
+\if (v < 60) return v + '분';
+\const h = Math.floor(v / 60);
+\const r = v % 60;
+\return h + '시간' + (r ? ' ' + r + '분' : '');
+}
+
+function fmtBook(n){
+\return Math.max(0, Math.round(Number(n) || 0)) + '권';
+}
+
+function clampInt(v, max){
+\const n = Math.round(Number(v) || 0);
+\if (!isFinite(n)) return 0;
+\return Math.max(0, Math.min(max, n));
+}
+
+function dayMap(kid, key){
+\return (kid && kid[key] && typeof kid[key] === 'object' && !Array.isArray(kid[key])) ? kid[key] : {};
+}
+
+function ensureDayMap(kid, key){
+\if (!kid[key] || typeof kid[key] !== 'object' || Array.isArray(kid[key])) kid[key] = {};
+\return kid[key];
+}
+
+function dayRec(kid, key, d){
+\const rec = dayMap(kid, key)[d];
+\return (rec && typeof rec === 'object' && !Array.isArray(rec)) ? rec : {};
+}
+
+function timeToday(kid, id){ return clampInt(dayRec(kid, 'time', todayStr())[id], TIME_MAX); }
+function bookToday(kid, id){ return clampInt(dayRec(kid, 'books', todayStr())[id], BOOK_MAX); }
+
+/* 항목별 합계: sinceStr 을 주면 그 날짜 이후만 셉니다. */
+function itemSum(kid, key, id, sinceStr, max){
+\const map = dayMap(kid, key);
+\let sum = 0;
+\Object.keys(map).forEach(function(d){
+\if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+\if (sinceStr && d < sinceStr) return;
+\const rec = map[d];
+\if (!rec || typeof rec !== 'object') return;
+\sum += clampInt(rec[id], max);
+});
+\return sum;
+}
+
+function timeSum(kid, id, sinceStr){ return itemSum(kid, 'time', id, sinceStr, TIME_MAX); }
+function bookSum(kid, id, sinceStr){ return itemSum(kid, 'books', id, sinceStr, BOOK_MAX); }
+
+function timeTotal(kid){
+\return TIME_ITEMS.reduce(function(s, it){ return s + timeSum(kid, it.id, null); }, 0);
+}
+
+function bookTotal(kid){
+\return BOOK_ITEMS.reduce(function(s, it){ return s + bookSum(kid, it.id, null); }, 0);
+}
+
+function timeDayTotal(kid, d){
+\return TIME_ITEMS.reduce(function(s, it){ return s + clampInt(dayRec(kid, 'time', d)[it.id], TIME_MAX); }, 0);
+}
+
+function bookDayTotal(kid, d){
+\return BOOK_ITEMS.reduce(function(s, it){ return s + clampInt(dayRec(kid, 'books', d)[it.id], BOOK_MAX); }, 0);
+}
+
+function weekStartStr(){ return dateStr(new Date(Date.now() - 6 * DAY_MS)); }
+
+function recentDays(n){
+\const out = [];
+\for (let i = 0; i < n; i++) out.push(dateStr(new Date(Date.now() - i * DAY_MS)));
+\return out;
+}
+
+function shortDay(d){
+\const p = String(d).split('-');
+\if (p.length !== 3) return d;
+\return Number(p[1]) + '/' + Number(p[2]);
+}
+
+/* 시트가 돌려준 아이별 누적 합계 (이 기기 기록이 더 적을 때만 채워 보여 줍니다) */
+function sheetTotalOf(kidName, kind){
+\const v = sheetTotals && sheetTotals[kidName];
+\if (v == null) return 0;
+\if (typeof v === 'number') return kind === 'minutes' ? Math.max(0, Math.round(v)) : 0;
+\return Math.max(0, Math.round(Number(v[kind]) || 0));
+}
+
+function renderTime(){
+\if (!el.timeCard) return;
+\const k = curKid();
+\const kid = kidState(k.id);
+\const t = todayStr();
+\const days = recentDays(5);
+\const weekStart = weekStartStr();
+\const total = Math.max(timeTotal(kid), sheetTotalOf(k.name, 'minutes'));
+
+\const items = TIME_ITEMS.map(function(it){
+\const today = timeToday(kid, it.id);
+\const week = timeSum(kid, it.id, weekStart);
+\const all = timeSum(kid, it.id, null);
+\const quick = TIME_QUICK.map(function(m){
+\return '<button class="io-q plus" data-action="time-add" data-item="' + it.id + '" data-min="' + m + '">+' + m + '분</button>';
+}).join('') +
+'<button class="io-q minus" data-action="time-add" data-item="' + it.id + '" data-min="-' + TIME_STEP + '">−' + TIME_STEP + '분</button>';
+
+\return '<div class="io-item">' +
+'<div class="io-top">' +
+'<span class="io-emoji" aria-hidden="true">' + it.emoji + '</span>' +
+'<span class="io-name">' + esc(it.label) + '</span>' +
+'<span class="io-today' + (timeBump === it.id ? ' bump' : '') + '"><b>' + today + '</b>분</span>' +
+'</div>' +
+'<div class="io-sub">이번 주 <b>' + fmtMin(week) + '</b> · 누적 <b>' + fmtMin(all) + '</b></div>' +
+'<div class="io-quick">' + quick + '</div>' +
+'<div class="io-set">' +
+'<input type="number" id="time-' + it.id + '" min="0" max="' + TIME_MAX + '" step="1" inputmode="numeric" ' +
+'value="' + today + '" aria-label="' + esc(it.label) + ' 오늘 분 입력">' +
+'<span class="u">분</span>' +
+'<button class="btn tiny primary" data-action="time-set" data-item="' + it.id + '">저장</button>' +
+'<button class="io-del" data-action="time-clear" data-item="' + it.id + '">지우기</button>' +
+'</div>' +
+'</div>';
+}).join('');
+
+\const head = '<tr><th>날짜</th>' +
+\TIME_ITEMS.map(function(it){ return '<th>' + esc(it.short) + '</th>'; }).join('') + '<th>합계</th></tr>';
+
+\const body = days.map(function(d){
+\let sum = 0;
+\const cells = TIME_ITEMS.map(function(it){
+\const v = clampInt(dayRec(kid, 'time', d)[it.id], TIME_MAX);
+\sum += v;
+\return '<td class="' + (v ? '' : 'zero') + '">' + (v ? v : '·') + '</td>';
+}).join('');
+\return '<tr class="' + (d === t ? 'is-today' : '') + '">' +
+'<td>' + (d === t ? '오늘' : shortDay(d)) + '</td>' + cells +
+'<td class="total' + (sum ? '' : ' zero') + '">' + (sum ? sum : '·') + '</td></tr>';
+}).join('');
+
+\el.timeCard.innerHTML =
+'<div class="card-head"><h2>⏱️ 공부 시간</h2><span class="badge">누적 ' + fmtMin(total) + '</span></div>' +
+'<div class="io-list">' + items + '</div>' +
+'<div class="io-hist">' +
+'<p class="io-hist-head">최근 5일 <span>단위: 분</span></p>' +
+'<table class="io-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' +
+'</div>' +
+'<p class="io-foot">버튼을 누르면 오늘 기록에 더해져요. 직접 입력하고 [저장]해도 됩니다.</p>';
+
+\timeBump = '';
+}
+
+/* ===================== 렌더: 읽은 책 권수 (권) ===================== */
+let bookBump = '';
+
+function renderBooks(){
+\if (!el.bookCard) return;
+\const k = curKid();
+\const kid = kidState(k.id);
+\const t = todayStr();
+\const days = recentDays(5);
+\const weekStart = weekStartStr();
+\const total = Math.max(bookTotal(kid), sheetTotalOf(k.name, 'books'));
+
+\const items = BOOK_ITEMS.map(function(it){
+\const today = bookToday(kid, it.id);
+\const week = bookSum(kid, it.id, weekStart);
+\const all = bookSum(kid, it.id, null);
+\const quick = BOOK_QUICK.map(function(n){
+\return '<button class="io-q plus" data-action="book-add" data-item="' + it.id + '" data-n="' + n + '">+' + n + '권</button>';
+}).join('') +
+'<button class="io-q minus" data-action="book-add" data-item="' + it.id + '" data-n="-1">−1권</button>';
+
+\return '<div class="io-item">' +
+'<div class="io-top">' +
+'<span class="io-emoji" aria-hidden="true">' + it.emoji + '</span>' +
+'<span class="io-name">' + esc(it.label) + '</span>' +
+'<span class="io-today' + (bookBump === it.id ? ' bump' : '') + '"><b>' + today + '</b>권</span>' +
+'</div>' +
+'<div class="io-sub">이번 주 <b>' + fmtBook(week) + '</b> · 누적 <b>' + fmtBook(all) + '</b></div>' +
+'<div class="io-quick three">' + quick + '</div>' +
+'<div class="io-set">' +
+'<input type="number" id="book-' + it.id + '" min="0" max="' + BOOK_MAX + '" step="1" inputmode="numeric" ' +
+'value="' + today + '" aria-label="' + esc(it.label) + ' 오늘 권수 입력">' +
+'<span class="u">권</span>' +
+'<button class="btn tiny primary" data-action="book-set" data-item="' + it.id + '">저장</button>' +
+'<button class="io-del" data-action="book-clear" data-item="' + it.id + '">지우기</button>' +
+'</div>' +
+'</div>';
+}).join('');
+
+\const head = '<tr><th>날짜</th>' +
+\BOOK_ITEMS.map(function(it){ return '<th>' + esc(it.short) + '</th>'; }).join('') + '<th>합계</th></tr>';
+
+\const body = days.map(function(d){
+\let sum = 0;
+\const cells = BOOK_ITEMS.map(function(it){
+\const v = clampInt(dayRec(kid, 'books', d)[it.id], BOOK_MAX);
+\sum += v;
+\return '<td class="' + (v ? '' : 'zero') + '">' + (v ? v : '·') + '</td>';
+}).join('');
+\return '<tr class="' + (d === t ? 'is-today' : '') + '">' +
+'<td>' + (d === t ? '오늘' : shortDay(d)) + '</td>' + cells +
+'<td class="total' + (sum ? '' : ' zero') + '">' + (sum ? sum : '·') + '</td></tr>';
+}).join('');
+
+\el.bookCard.innerHTML =
+'<div class="card-head"><h2>📚 읽은 책</h2><span class="badge">누적 ' + fmtBook(total) + '</span></div>' +
+'<div class="io-list">' + items + '</div>' +
+'<div class="io-hist">' +
+'<p class="io-hist-head">최근 5일 <span>단위: 권</span></p>' +
+'<table class="io-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' +
+'</div>' +
+'<p class="io-foot">읽은 책을 한 권씩 더해 두면 이번 주·누적 권수가 저절로 쌓여요.</p>';
+
+\bookBump = '';
+}
+
+/* ===================== 동작: 시간 · 권수 ===================== */
+function timeAdd(itemId, delta){
+\if (!TIME_ITEMS.some(function(x){ return x.id === itemId; })) return;
+\const k = curKid();
+\const kid = kidState(k.id);
+\const t = todayStr();
+\const map = ensureDayMap(kid, 'time');
+\const rec = Object.assign({}, dayRec(kid, 'time', t));
+\const before = clampInt(rec[itemId], TIME_MAX);
+\const next = clampInt(before + (Number(delta) || 0), TIME_MAX);
+\if (next === before) {
+\if (before === 0) toast('오늘은 아직 0분이에요. 직접 입력해도 좋아요!');
+\return;
+}
+\if (next > 0) rec[itemId] = next;
+\else delete rec[itemId];
+\if (Object.keys(rec).length) map[t] = rec;
+\else delete map[t];
+\timeBump = itemId;
+\saveAndSync(k.id);
+\renderTime();
+\playTick();
+}
+
+function timeSet(itemId){
+\if (!TIME_ITEMS.some(function(x){ return x.id === itemId; })) return;
+\const k = curKid();
+\const kid = kidState(k.id);
+\const input = $('#time-' + itemId);
+\const raw = String(input ? input.value : '').trim();
+\if (!raw) { toast('몇 분인지 먼저 적어 주세요'); return; }
+\const t = todayStr();
+\const map = ensureDayMap(kid, 'time');
+\const rec = Object.assign({}, dayRec(kid, 'time', t));
+\const v = clampInt(raw, TIME_MAX);
+\if (v > 0) rec[itemId] = v;
+\else delete rec[itemId];
+\if (Object.keys(rec).length) map[t] = rec;
+\else delete map[t];
+\timeBump = itemId;
+\saveAndSync(k.id);
+\renderTime();
+\playTick();
+\const it = TIME_ITEMS.filter(function(x){ return x.id === itemId; })[0];
+\toast('⏱️ 오늘 ' + it.label + ' ' + fmtMin(v) + ' 저장!');
+}
+
+function timeClear(itemId){
+\const k = curKid();
+\const kid = kidState(k.id);
+\const t = todayStr();
+\const cur = timeToday(kid, itemId);
+\if (!cur) { toast('오늘 기록이 아직 없어요'); return; }
+\const it = TIME_ITEMS.filter(function(x){ return x.id === itemId; })[0];
+\if (!confirm(k.name + ' 오늘 ' + it.label + ' ' + fmtMin(cur) + ' 기록을 지울까요?')) return;
+\const map = ensureDayMap(kid, 'time');
+\const rec = Object.assign({}, dayRec(kid, 'time', t));
+\delete rec[itemId];
+\if (Object.keys(rec).length) map[t] = rec;
+\else delete map[t];
+\saveAndSync(k.id);
+\renderTime();
+\toast('오늘 ' + it.label + ' 기록을 지웠어요');
+}
+
+function bookAdd(itemId, delta){
+\if (!BOOK_ITEMS.some(function(x){ return x.id === itemId; })) return;
+\const k = curKid();
+\const kid = kidState(k.id);
+\const t = todayStr();
+\const map = ensureDayMap(kid, 'books');
+\const rec = Object.assign({}, dayRec(kid, 'books', t));
+\const before = clampInt(rec[itemId], BOOK_MAX);
+\const next = clampInt(before + (Number(delta) || 0), BOOK_MAX);
+\if (next === before) {
+\if (before === 0) toast('오늘은 아직 0권이에요. 직접 입력해도 좋아요!');
+\return;
+}
+\if (next > 0) rec[itemId] = next;
+\else delete rec[itemId];
+\if (Object.keys(rec).length) map[t] = rec;
+\else delete map[t];
+\bookBump = itemId;
+\saveAndSync(k.id);
+\renderBooks();
+\playTick();
+}
+
+function bookSet(itemId){
+\if (!BOOK_ITEMS.some(function(x){ return x.id === itemId; })) return;
+\const k = curKid();
+\const kid = kidState(k.id);
+\const input = $('#book-' + itemId);
+\const raw = String(input ? input.value : '').trim();
+\if (!raw) { toast('몇 권인지 먼저 적어 주세요'); return; }
+\const t = todayStr();
+\const map = ensureDayMap(kid, 'books');
+\const rec = Object.assign({}, dayRec(kid, 'books', t));
+\const v = clampInt(raw, BOOK_MAX);
+\if (v > 0) rec[itemId] = v;
+\else delete rec[itemId];
+\if (Object.keys(rec).length) map[t] = rec;
+\else delete map[t];
+\bookBump = itemId;
+\saveAndSync(k.id);
+\renderBooks();
+\playTick();
+\const it = BOOK_ITEMS.filter(function(x){ return x.id === itemId; })[0];
+\toast('📚 오늘 ' + it.label + ' ' + fmtBook(v) + ' 저장!');
+}
+
+function bookClear(itemId){
+\const k = curKid();
+\const kid = kidState(k.id);
+\const t = todayStr();
+\const cur = bookToday(kid, itemId);
+\if (!cur) { toast('오늘 기록이 아직 없어요'); return; }
+\const it = BOOK_ITEMS.filter(function(x){ return x.id === itemId; })[0];
+\if (!confirm(k.name + ' 오늘 ' + it.label + ' ' + fmtBook(cur) + ' 기록을 지울까요?')) return;
+\const map = ensureDayMap(kid, 'books');
+\const rec = Object.assign({}, dayRec(kid, 'books', t));
+\delete rec[itemId];
+\if (Object.keys(rec).length) map[t] = rec;
+\else delete map[t];
+\saveAndSync(k.id);
+\renderBooks();
+\toast('오늘 ' + it.label + ' 기록을 지웠어요');
+}
+
+/* ===================== 렌더: 쿠폰함 ===================== */
+let pendingUse = null;
+
+function renderCoupons(){
+\const k = curKid();
+\const kid = kidState(k.id);
+\const list = kid.coupons;
+\const usable = list.filter(function(c){ return !c.used; });
+
+\let body = '';
+\if (!list.length) {
+\body = '<div class="empty"><span class="big">🎫</span>아직 쿠폰이 없어요.<br>7일·10일·15일 연속 성공하면 쿠폰이 짠!</div>';
+} else {
+\body = '<div class="coupon-list">' + list.map(function(c){
+\const confirming = pendingUse === c.id;
+\const type = c.type || 'free';
+\let action;
+\if (c.used) {
+\action = '';
+} else if (confirming) {
+\action = '<button class="use-btn" data-action="confirm-use" data-id="' + c.id + '">쓸래요!</button>' +
+'<button class="use-btn ghost" data-action="cancel-use" data-id="' + c.id + '">취소</button>';
+} else {
+\action = '<button class="use-btn" data-action="use-coupon" data-id="' + c.id + '">사용하기</button>';
+}
+\return '<div class="coupon ' + type + (c.used ? ' used' : '') + '">' +
+(c.used ? '<span class="used-stamp">사용완료</span>' +
+'<button class="undo" data-action="undo-coupon" data-id="' + c.id + '">되돌리기</button>' : '') +
+'<div class="c-emoji">' + c.emoji + '</div>' +
+'<div class="c-body">' +
+'<div class="c-title">' + esc(c.title) + '</div>' +
+'<div class="c-meta">' + (c.used ? '사용일 ' + shortDate(c.usedAt) : '받은 날 ' + shortDate(c.issuedAt) + ' · 연속 ' + (c.streakAt || '') + '일') + '</div>' +
+'</div>' +
+'<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:50%">' + action + '</div>' +
+'</div>';
+}).join('') + '</div>';
+}
+
+\el.couponCard.innerHTML =
+'<div class="card-head"><h2>🎟️ ' + k.name + ' 쿠폰함</h2><span class="badge">쓸 수 있는 쿠폰 ' + usable.length + '장</span></div>' + body;
+}
+
+/* ===================== 렌더: 가족 미션 ===================== */
+function renderMission(){
+\const m = state.mission;
+\const has = !!m.text;
+\let box;
+\if (!has) {
+\box = '<div class="mission-box"><div class="mission-text">오늘의 가족 미션을 뽑아 볼까요?</div>' +
+'<div class="mission-actions"><button class="btn warm" data-action="draw-mission">🎲 미션 뽑기</button></div></div>';
+} else {
+\box = '<div class="mission-box"><div class="mission-text' + (m.done ? ' done' : '') + '">' +
+(m.done ? '✅ ' : '') + esc(m.text) + '</div>' +
+'<div class="mission-actions">' +
+(m.done
+? '<button class="btn" data-action="draw-mission">🔁 다른 미션 뽑기</button>'
+: '<button class="btn primary" data-action="complete-mission">✅ 미션 완료!</button>' +
+'<button class="btn" data-action="draw-mission">🔁 다시 뽑기</button>') +
+'</div></div>';
+}
+
+\const customCount = state.missions.filter(function(x){ return x.custom; }).length;
+
+\el.missionCard.innerHTML =
+'<div class="card-head"><h2>💌 가족 랜덤 미션</h2><span class="badge">' + state.missions.length + '개 중 1개</span></div>' +
+\box +
+'<div class="add-row"><input type="text" id="missionInput" maxlength="40" placeholder="우리 가족만의 미션을 추가해요" aria-label="새 미션">' +
+'<button class="btn tiny" data-action="add-mission">추가</button></div>' +
+(customCount ? '<p class="set-help" style="margin-top:8px">직접 추가한 미션 ' + customCount + '개는 아래 부모 설정에서 지울 수 있어요.</p>' : '');
+}
+
+/* ===================== 알림 팝업 ===================== */
+function confetti(host){
+\const chars = ['🎉','✨','🎊','💜','⭐','🌟','💫','🎈'];
+\for (let i = 0; i < 16; i++) {
+\const s = document.createElement('span');
+\s.className = 'confetti';
+\s.textContent = chars[i % chars.length];
+\s.style.left = (6 + Math.random() * 88) + '%';
+\s.style.animationDelay = (Math.random() * 0.5).toFixed(2) + 's';
+\s.style.fontSize = (14 + Math.random() * 12).toFixed(0) + 'px';
+\host.appendChild(s);
+\setTimeout(function(){ if (s.parentNode) s.parentNode.removeChild(s); }, 2600);
+}
+}
+
+function showHighFive(kidId, streak, rewards){
+\const k = KIDS.filter(function(x){ return x.id === kidId; })[0] || curKid();
+\const kid = state.kids[kidId];
+
+\let rewardHtml = '';
+\if (rewards && rewards.length) {
+\rewardHtml = rewards.map(function(r){
+\return '<div class="reward">🎁 새 쿠폰! ' + r.emoji + ' ' + r.title + '</div>';
+}).join('');
+}
+
+\el.highfiveContent.innerHTML =
+'<span class="hero">🙌</span>' +
+'<h2>' + k.emoji + ' ' + k.name + ', ' + TASKS.length + '개 다 했어요!</h2>' +
+'<p>🔥 <b>' + streak + '일 연속 성공</b>' + (kid && kid.best >= streak ? ' · 최고 기록이에요!' : '') + '<br>' +
+(rewards && rewards.length ? '쿠폰함에 새 쿠폰이 들어왔어요 💜' : '오늘도 정말 잘했어요!') + '</p>' +
+\rewardHtml +
+'<button class="btn primary" data-action="close-highfive">좋아!</button>';
+
+\el.highfive.hidden = false;
+\confetti(el.highfiveContent);
+\playChime();
+\buzz([120, 70, 120, 70, 260]);
+}
+
+function closeHighFive(){
+\el.highfive.hidden = true;
+\el.highfiveContent.innerHTML = '';
+}
+
+/* ===================== 렌더: 부모 설정 ===================== */
+let settingsOpen = false;
+
+function renderSettings(){
+\const kidBlocks = KIDS.map(function(k){
+\const kid = state.kids[k.id];
+\const options = MILESTONES.map(function(m){
+\return '<option value="' + m.type + '">' + m.emoji + ' ' + m.title + '</option>';
+}).join('');
+\return '<div class="set-group">' +
+'<h3>' + k.emoji + ' ' + k.name + ' 설정</h3>' +
+'<div class="set-line">' +
+'<span class="lab">연속 일수</span>' +
+'<input type="number" id="set-streak-' + k.id + '" min="0" max="999" value="' + kid.streak + '" aria-label="' + k.name + ' 연속 일수">' +
+'<button class="btn tiny" data-action="set-streak" data-kid="' + k.id + '">저장</button>' +
+'</div>' +
+'<div class="set-line">' +
+'<button class="btn tiny" data-action="test-day" data-kid="' + k.id + '">🧪 테스트: 하루 완료 (+1일)</button>' +
+'<button class="btn tiny" data-action="reset-today" data-kid="' + k.id + '">오늘 할 일 초기화</button>' +
+'</div>' +
+'<div class="set-line">' +
+'<span class="lab">쿠폰 지급</span>' +
+'<select id="grant-' + k.id + '" aria-label="' + k.name + ' 쿠폰 종류">' + options + '</select>' +
+'<button class="btn tiny" data-action="grant-coupon" data-kid="' + k.id + '">지급</button>' +
+'</div>' +
+'<p class="set-help">연속 일수를 직접 바꾸면 그 값부터 이어서 계산돼요. (예: 6으로 바꾸고 오늘 할 일을 다 하면 7일째 쿠폰이 나옵니다)</p>' +
+'</div>';
+}).join('');
+
+\const customs = state.missions.filter(function(m){ return m.custom; });
+\const customHtml = customs.length
+? '<div class="custom-mission-list">' + customs.map(function(m){
+\return '<span class="chip">' + esc(m.text) +
+'<button data-action="del-mission" data-id="' + m.id + '" aria-label="미션 삭제">×</button></span>';
+}).join('') + '</div>'
+: '<p class="set-help">직접 추가한 미션이 아직 없어요.</p>';
+
+\el.settingsWrap.innerHTML =
+'<details' + (settingsOpen ? ' open' : '') + '>' +
+'<summary>🔧 부모 설정 <span class="muted" style="font-weight:700">(날짜·스트릭 보정, 테스트)</span><span class="arrow">▼</span></summary>' +
+'<div class="set-group">' +
+'<h3>알림음</h3>' +
+'<div class="set-line">' +
+'<button class="btn tiny" data-action="sound">' + (state.settings.sound ? '🔔 켜짐' : '🔕 꺼짐') + '</button>' +
+'<button class="btn tiny" data-action="test-sound">소리 미리 듣기</button>' +
+'</div>' +
+'<p class="set-help">아이 태블릿이 무음 모드면 알림음이 안 들릴 수 있어요.</p>' +
+'</div>' +
+\kidBlocks +
+'<div class="set-group">' +
+'<h3>내가 추가한 가족 미션</h3>' + customHtml +
+'</div>' +
+'<div class="set-group">' +
+'<h3>🔗 구글 시트 연결 <span class="muted" style="font-weight:700">(선택)</span></h3>' +
+'<div class="set-line">' +
+'<input type="url" class="sheet-url" id="sheetUrl" inputmode="url" autocomplete="off" spellcheck="false" ' +
+'placeholder="https://script.google.com/macros/s/.../exec" value="' + esc(sheetCfg.url) + '" aria-label="구글 시트 Apps Script URL">' +
+'</div>' +
+'<div class="set-line">' +
+'<button class="btn tiny primary" data-action="sheet-save">저장 & 연결 테스트</button>' +
+'<button class="btn tiny" data-action="sheet-load">시트에서 불러오기</button>' +
+(sheetCfg.url ? '<button class="btn tiny" data-action="sheet-unlink">연결 해제</button>' : '') +
+'</div>' +
+'<p class="sheet-status' + (sheetStatus.kind ? ' ' + sheetStatus.kind : '') + '" id="sheetStatus">' +
+\esc(sheetStatus.text || (sheetCfg.url ? '연결된 주소로 시트에 저장돼요.' : '아직 연결하지 않았어요. 비워 두면 이 기기에만 저장돼요.')) + '</p>' +
+'<p class="set-help">주소를 넣으면 할 일 7개 체크와 시간 4종(분)·권수 2종(권)이 그때마다 시트 “독서기록”에 (날짜, 아이) 한 줄로 쌓이고, 새로 고칠 때 시트 기록을 다시 불러와 다른 가족 폰과 같은 기록을 봐요. 붙여 넣을 Apps Script 코드는 노션 “⚙️ 구글 시트 Apps Script 코드 (Code.gs)” 페이지에 있어요.</p>' +
+'</div>' +
+'<div class="set-group">' +
+'<h3>데이터</h3>' +
+'<div class="set-line">' +
+'<button class="btn tiny danger" data-action="reset-all">모든 기록 초기화</button>' +
+'</div>' +
+'<p class="set-help">' + (sheetOn()
+? '이 기기 브라우저에 저장하고, 같은 내용을 구글 시트에도 쌓아요. 다른 기기에서도 불러올 수 있어요. [모든 기록 초기화]를 누르면 시트의 독서기록도 함께 지워요.'
+: '기록은 이 기기의 브라우저에만 저장돼요. 다른 기기와 자동으로 맞춰지지 않아요.') + '</p>' +
+'</div>' +
+'</details>';
+}
+
+/* ===================== 렌더: 2단 좌우 균형 =====================
+\카드 높이를 실제로 재서, 두 열의 아래 끝이 가장 잘 맞는 나눔을 고릅니다.
+     - 폭 820px 미만(휴대폰·작은 세로 화면)은 예전처럼 한 줄로 이어 붙입니다.
+     - 820px 이상(아이패드 세로·가로, 데스크톱)은 좌우 2단으로 나뉘어 노출됩니다. /
+const CARD_ORDER = ['streakCard','taskCard','timeCard','bookCard','couponCard','missionCard'];
+const COL_GAP = 16;              / .col 의 카드 사이 간격(px) /
+const BALANCE_SLACK = 80;        / 이 정도 차이면 굳이 카드를 옮기지 않아요 /
+const TWO_COL_MIN = 820;         / CSS @media (min-width:820px) 와 같은 기준 */
+
+/* 기본 배치: 할 일·공부 시간을 왼쪽, 나머지를 오른쪽 */
+const BASE_SPLIT = {
+\left:  ['taskCard','timeCard'],
+\right: ['streakCard','bookCard','couponCard','missionCard']
+};
+
+function colIds(col){ return Array.prototype.map.call(col.children, function(c){ return c.id; }); }
+
+function orderColumn(col, list){
+\const cur = colIds(col);
+\if (cur.length === list.length && cur.every(function(id, i){ return id === list[i]; })) return;
+\list.forEach(function(id){
+\const card = document.getElementById(id);
+\if (card) col.appendChild(card);
+});
+}
+
+function cardsHeight(list, h){
+\let sum = 0;
+\list.forEach(function(id){ sum += h[id] || 0; });
+\return sum + Math.max(0, list.length - 1) * COL_GAP;
+}
+
+/* 카드의 '자연 높이'(늘어나기 전 높이)를 잽니다. */
+function naturalHeights(cards){
+\const de = document.documentElement;
+\de.classList.add('measuring-cards');
+\const h = {};
+\cards.forEach(function(c){ h[c.id] = Math.ceil(c.getBoundingClientRect().height); });
+\de.classList.remove('measuring-cards');
+\return h;
+}
+
+/* 6장을 좌우로 나누는 모든 경우(2~4장씩) 중 높이 차가 가장 작은 나눔을 찾습니다. */
+function bestSplit(h){
+\const ids = CARD_ORDER.slice();
+\let best = null;
+\for (let mask = 1; mask < (1 << ids.length) - 1; mask++) {
+\const left = [], right = [];
+\ids.forEach(function(id, i){ (mask & (1 << i) ? left : right).push(id); });
+\if (left.length < 2 || left.length > 4) continue;
+\const diff = Math.abs(cardsHeight(left, h) - cardsHeight(right, h));
+\if (!best || diff < best.diff) best = { left: left, right: right, diff: diff };
+}
+\return best;
+}
+
+function layoutCards(){
+\if (!el.colA || !el.colB) return;
+\const cards = CARD_ORDER.map(function(id){ return document.getElementById(id); }).filter(Boolean);
+\if (!cards.length) return;
+
+/* 한 줄 화면: 카드 순서 그대로 한 열에 쌓습니다 */
+\if (window.innerWidth < TWO_COL_MIN) {
+\orderColumn(el.colA, cards.map(function(c){ return c.id; }));
+\if (el.colB.firstChild) el.colB.textContent = '';
+\return;
+}
+
+/* 지금 놓인 열 너비 그대로 카드 높이를 재고 → 가장 고른 나눔을 적용
+(2단 화면에서는 마지막 카드가 남는 여백만큼 늘어나 있으므로,
+\잴 때만 '늘어나기 전' 자연 높이로 되돌려 정확히 잽니다.) */
+\const h = naturalHeights(cards);
+
+\const baseDiff = Math.abs(cardsHeight(BASE_SPLIT.left, h) - cardsHeight(BASE_SPLIT.right, h));
+\const best = bestSplit(h);
+\const pick = (best && best.diff + BALANCE_SLACK < baseDiff) ? best : BASE_SPLIT;
+
+\orderColumn(el.colA, pick.left);
+\orderColumn(el.colB, pick.right);
+}
+
+/* ===================== 전체 렌더 ===================== */
+function renderAll(){
+\el.todayLabel.textContent = koreanDate(new Date());
+\el.soundBtn.textContent = state.settings.sound ? '🔔' : '🔕';
+\el.soundBtn.classList.toggle('off', !state.settings.sound);
+\el.soundBtn.setAttribute('aria-pressed', String(state.settings.sound));
+\el.storageNote.textContent = storageOK ? '' : '(이 브라우저는 저장이 제한돼 있어요)';
+\if (el.footerNote) {
+\el.footerNote.textContent = sheetOn()
+? '이 파일 하나로 열리고, 기록은 이 기기와 구글 시트에 함께 저장됩니다 ☁️🔒'
+: '외부 연결 없이 이 파일만으로 열려요 · 기록은 이 기기 브라우저에만 저장됩니다 🔒';
+}
+\renderTabs();
+\renderStreak();
+\renderNewYear();
+\renderTasks();
+\renderTime();
+\renderBooks();
+\renderCoupons();
+\renderMission();
+\renderSettings();
+\renderSheetNote();
+\layoutCards();
+}
+
+/* ===================== 동작 ===================== */
+function toggleTask(taskId){
+\const k = curKid();
+\const kid = kidState(k.id);
+\const was = !!kid.tasks[taskId];
+
+\if (was) delete kid.tasks[taskId];
+\else kid.tasks[taskId] = true;
+
+\if (was) {
+\justChecked = null;
+\saveAndSync(k.id); renderAll();
+\return;
+}
+
+\const nowComplete = allDone(kid);
+\if (nowComplete && kid.lastDone !== todayStr()) {
+\kid.streak += 1;
+\kid.lastDone = todayStr();
+\kid.totalDone += 1;
+\if (kid.streak > kid.best) kid.best = kid.streak;
+\const rewards = awardCoupons(kid, kid.streak);
+\justChecked = taskId;
+\saveAndSync(k.id);
+\renderAll();
+\playStamp();
+\setTimeout(function(){ showHighFive(k.id, kid.streak, rewards); }, 260);
+\return;
+}
+
+\justChecked = taskId;
+\saveAndSync(k.id); renderAll();
+\playTick();
+\setTimeout(function(){ justChecked = null; }, 700);
+}
+
+function useCouponConfirm(id){
+\pendingUse = id;
+\renderCoupons();
+}
+
+function confirmUse(id){
+\const kid = kidState();
+\const c = kid.coupons.filter(function(x){ return x.id === id; })[0];
+\if (!c || c.used) { pendingUse = null; renderCoupons(); return; }
+\c.used = true;
+\c.usedAt = new Date().toISOString();
+\pendingUse = null;
+\save(); renderAll();
+\playChime();
+\toast('🎉 ' + c.emoji + ' ' + c.title + ' 사용 완료!');
+}
+
+function undoUse(id){
+\const kid = kidState();
+\const c = kid.coupons.filter(function(x){ return x.id === id; })[0];
+\if (!c) return;
+\c.used = false;
+\c.usedAt = null;
+\save(); renderAll();
+\toast('쿠폰을 다시 쓸 수 있게 되돌렸어요');
+}
+
+function drawMission(){
+\const list = state.missions;
+\if (!list.length) { toast('미션이 없어요. 하나 추가해 주세요!'); return; }
+\let pick = list[Math.floor(Math.random() * list.length)];
+\let guard = 0;
+\while (list.length > 1 && pick.text === state.mission.text && guard < 12) {
+\pick = list[Math.floor(Math.random() * list.length)];
+\guard++;
+}
+\state.mission = { date: todayStr(), text: pick.text, done: false };
+\save(); renderMission();
+\playTick();
+}
+
+function completeMission(){
+\if (!state.mission.text) return;
+\state.mission.done = true;
+\save(); renderMission();
+\confetti(document.body);
+\playChime();
+\toast('💜 미션 완료! 가족이 더 가까워졌어요');
+}
+
+function addMission(){
+\const input = $('#missionInput');
+\if (!input) return;
+\const val = input.value.trim();
+\if (!val) { toast('미션 내용을 적어 주세요'); return; }
+\if (state.missions.some(function(m){ return m.text === val; })) { toast('이미 있는 미션이에요'); return; }
+\state.missions.push({ id: uid(), text: val, custom: true });
+\input.value = '';
+\save(); renderSettings(); renderMission();
+\toast('가족 미션을 추가했어요');
+}
+
+function setStreak(kidId){
+\const input = $('#set-streak-' + kidId);
+\if (!input) return;
+\const v = Math.max(0, Math.min(999, Math.round(Number(input.value) || 0)));
+\const kid = state.kids[kidId];
+\kid.streak = v;
+\if (v > kid.best) kid.best = v;
+\if (v === 0) kid.lastDone = null;
+\save(); renderAll();
+\toast(KIDS.filter(function(k){ return k.id === kidId; })[0].name + ' 연속 성공 ' + v + '일로 맞췄어요');
+}
+
+function testDay(kidId){
+\const kid = state.kids[kidId];
+\kid.streak += 1;
+\if (kid.streak > kid.best) kid.best = kid.streak;
+\kid.totalDone += 1;
+\kid.lastDone = yesterdayStr();
+\kid.date = todayStr();
+\kid.tasks = {};
+\const rewards = awardCoupons(kid, kid.streak);
+\save(); renderAll();
+\const k = KIDS.filter(function(x){ return x.id === kidId; })[0];
+\toast('🧪 ' + k.name + ' ' + kid.streak + '일째' + (rewards.length ? ' · 쿠폰 ' + rewards.length + '장 발급!' : ''));
+}
+
+function resetToday(kidId){
+\const kid = state.kids[kidId];
+\if (!confirm('오늘 할 일 체크를 모두 지울까요? (연속 일수는 그대로예요)')) return;
+\kid.tasks = {};
+\kid.lastDone = kid.lastDone === todayStr() ? yesterdayStr() : kid.lastDone;
+\save(); renderAll();
+\toast('오늘 체크를 초기화했어요');
+}
+
+function grantCoupon(kidId){
+\const sel = $('#grant-' + kidId);
+\if (!sel) return;
+\const m = MILESTONES.filter(function(x){ return x.type === sel.value; })[0] || MILESTONES[0];
+\const kid = state.kids[kidId];
+\kid.coupons.unshift({
+\id: uid(), key: 'manual-' + uid(), emoji: m.emoji, title: m.title, desc: m.desc, type: m.type,
+\issuedAt: new Date().toISOString(), used: false, usedAt: null, streakAt: kid.streak
+});
+\save(); renderAll();
+\toast(m.emoji + ' ' + m.title + ' 쿠폰을 넣었어요');
+}
+
+function deleteMission(id){
+\state.missions = state.missions.filter(function(m){ return m.id !== id; });
+\if (state.mission.text && !state.missions.some(function(m){ return m.text === state.mission.text; })) {
+\state.mission = { date:null, text:'', done:false };
+}
+\save(); renderAll();
+}
+
+function resetAll(){
+\if (!confirm('모든 기록(할 일 체크·시간·권수·연속 일수·쿠폰·미션)을 지울까요? 구글 시트에 연결돼 있으면 시트의 독서기록도 함께 지워요. 되돌릴 수 없어요.')) return;
+\if (!confirm('정말 지울까요? 한 번 더 확인해 주세요!')) return;
+\state = defaultState();
+\save();
+\sheetTotals = {};
+\renderAll();
+/* 시트가 연결돼 있으면 시트 기록도 함께 비웁니다. (안 비우면 새로 고칠 때 지운 기록이 되살아나요) */
+\if (sheetOn()) {
+\setSheetStatus('busy', '시트 기록을 지우는 중…');
+\sheetPost({ action:'clear' }).then(function(out){
+\setSheetStatus('ok', '시트 기록도 지웠어요 ✓ (' + (Number(out.cleared) || 0) + '줄) ' + timeHHMM(new Date()));
+\sheetTotals = {};
+\renderAll();
+}).catch(function(err){
+\setSheetStatus('err', '시트 기록은 지우지 못했어요 · ' + (err && err.message ? err.message : '연결을 확인해 주세요'));
+});
+}
+\toast('모든 기록을 초기화했어요');
+}
+
+function toggleSound(){
+\state.settings.sound = !state.settings.sound;
+\save(); renderAll();
+\if (state.settings.sound) { ensureAudio(); playTick(); }
+\toast(state.settings.sound ? '🔔 알림음을 켰어요' : '🔕 알림음을 껐어요');
+}
+
+/* ===================== 이벤트 ===================== */
+document.addEventListener('click', function(e){
+\const target = e.target.closest('[data-action]');
+\if (!target) return;
+\const action = target.dataset.action;
+\const kidId = target.dataset.kid;
+
+\switch (action) {
+\case 'tab':
+\state.active = kidId; pendingUse = null; justChecked = null;
+\save(); renderAll();
+\break;
+\case 'time-add': timeAdd(target.dataset.item, Number(target.dataset.min) || 0); break;
+\case 'time-set': timeSet(target.dataset.item); break;
+\case 'time-clear': timeClear(target.dataset.item); break;
+\case 'book-add': bookAdd(target.dataset.item, Number(target.dataset.n) || 0); break;
+\case 'book-set': bookSet(target.dataset.item); break;
+\case 'book-clear': bookClear(target.dataset.item); break;
+\case 'sheet-save': sheetSaveAndTest(); break;
+\case 'sheet-load': sheetLoad(false); break;
+\case 'sheet-unlink': sheetUnlink(); break;
+\case 'toggle-task': toggleTask(target.dataset.task); break;
+\case 'use-coupon': useCouponConfirm(target.dataset.id); break;
+\case 'confirm-use': confirmUse(target.dataset.id); break;
+\case 'cancel-use': pendingUse = null; renderCoupons(); break;
+\case 'undo-coupon': undoUse(target.dataset.id); break;
+\case 'draw-mission': drawMission(); break;
+\case 'complete-mission': completeMission(); break;
+\case 'add-mission': addMission(); break;
+\case 'del-mission': deleteMission(target.dataset.id); break;
+\case 'sound': toggleSound(); break;
+\case 'set-streak': setStreak(kidId); break;
+\case 'test-day': testDay(kidId); break;
+\case 'reset-today': resetToday(kidId); break;
+\case 'grant-coupon': grantCoupon(kidId); break;
+\case 'reset-all': resetAll(); break;
+\case 'test-sound': ensureAudio(); playChime(); toast('이런 소리가 나요 🔔'); break;
+\case 'close-highfive': closeHighFive(); break;
+}
+});
+
+document.addEventListener('keydown', function(e){
+\if (e.key !== 'Enter' || !e.target || !e.target.id) return;
+\var id = e.target.id;
+\if (id === 'missionInput') addMission();
+\else if (id === 'sheetUrl') sheetSaveAndTest();
+\else if (id.indexOf('time-') === 0) timeSet(id.slice(5));
+\else if (id.indexOf('book-') === 0) bookSet(id.slice(5));
+});
+
+document.addEventListener('visibilitychange', function(){
+\if (!document.hidden) normalizeDay();
+});
+
+document.addEventListener('toggle', function(e){
+\if (e.target && e.target.tagName === 'DETAILS') settingsOpen = e.target.open;
+}, true);
+
+/* ===================== 시작 ===================== */
+normalizeDay();
+renderAll();
+
+/* 시트가 연결돼 있으면 새로 열 때마다 시트 기록을 다시 받아 옵니다. */
+if (sheetOn()) sheetLoad(true);
+
+/* 자정이 지나면 새 날로 넘기기 (30초에 한 번만 확인) */
+setInterval(normalizeDay, 30000);
+
+/* 화면 폭이 바뀌면(아이패드 가로↔세로) 좌우 배치를 다시 맞춥니다. */
+let relayoutTimer = null;
+window.addEventListener('resize', function(){
+\clearTimeout(relayoutTimer);
+\relayoutTimer = setTimeout(layoutCards, 120);
+});
+window.addEventListener('orientationchange', function(){ setTimeout(layoutCards, 260); });
+if (document.fonts && document.fonts.ready) {
+\document.fonts.ready.then(function(){ layoutCards(); });
+}
+
+window.addEventListener('beforeunload', function(){ save(); });
+})();
+</script>
+</body>
+</html>
